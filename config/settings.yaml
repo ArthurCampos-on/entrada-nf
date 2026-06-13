@@ -1,0 +1,34 @@
+# ============================================================
+# config/settings.yaml
+# Edite este arquivo com seus dados antes de rodar o sistema
+# ============================================================
+#
+# OBS: o login no NBS (Cloud Service + NBS Shortcut) é feito
+# manualmente pelo usuário antes de acionar as automações.
+# Por isso, não há mais credenciais de login configuradas aqui.
+
+agendador:
+  # Horário do relatório diário automático (formato HH:MM)
+  horario_diario: "08:00"
+
+imagens:
+  # Pasta onde ficam os recortes dos botões para o sistema reconhecer
+  pasta: "imagens"
+  # Confiança mínima para considerar que encontrou o elemento (0.0 a 1.0)
+  # Diminua para 0.7 se o sistema tiver dificuldade em encontrar elementos
+  confianca: 0.8
+
+automacao:
+  # Tempo de espera entre ações (segundos) - aumente se o PC for lento
+  delay_acao: 0.6
+  # Tempo máximo esperando um elemento aparecer na tela (segundos)
+  timeout_elemento: 15
+  # Quantas vezes tenta encontrar um elemento antes de desistir
+  tentativas: 3
+
+whatsapp:
+  url: "https://web.whatsapp.com"
+
+logging:
+  nivel: "INFO"
+  arquivo: "data/logs/nbs_agent.log"

@@ -1,0 +1,10 @@
+# Dependências do NBS Agent
+# Instale com: pip install -r requirements.txt
+
+selenium>=4.20          # Abre o Chrome e faz login na tela web
+webdriver-manager>=4.0  # Baixa o driver do Chrome automaticamente
+pyautogui>=0.9          # Controla mouse e teclado no canvas do NBS
+opencv-python>=4.8      # Localiza imagens na tela (template matching)
+Pillow>=10.0            # Manipulação de imagens / screenshots
+pyyaml>=6.0             # Lê o arquivo de configuração
+loguru>=0.7             # Logs com cores e rotação automática
