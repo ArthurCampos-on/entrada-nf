@@ -14,6 +14,13 @@ import os
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
+# Garante saída em UTF-8 no console do Windows (evita UnicodeEncodeError
+# com emojis e caracteres especiais usados nos prints/logs do agente).
+if sys.platform == "win32":
+    sys.stdout.reconfigure(encoding="utf-8")
+    sys.stderr.reconfigure(encoding="utf-8")
+    os.system("chcp 65001 > nul")
+
 from src.agente import NBSAgent
 from src.menu   import rodar_menu
 

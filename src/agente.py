@@ -35,15 +35,13 @@ class NBSAgent:
     # ------------------------------------------------------------------ #
 
     def iniciar(self) -> bool:
+        """Inicializa o agente — conecta ao Chrome já aberto pelo usuário."""
         log.info("=" * 50)
         log.info("  NBS Agent iniciando...")
         log.info("=" * 50)
 
         self.browser.iniciar()
-
-        # WhatsApp em segunda aba
-        self.browser.abrir_whatsapp()
-        log.info("✓ Sistema pronto. Certifique-se de estar logado no NBS antes de usar as automações.")
+        log.info("✓ Sistema pronto para automações.")
         return True
 
     def iniciar_agendador(self):
@@ -52,10 +50,9 @@ class NBSAgent:
         self._agendador.iniciar()
 
     def encerrar(self):
-        """Para o agendador e fecha o Chrome."""
+        """Para o agendador. O Chrome fica aberto (usuário continua no sistema)."""
         if self._agendador:
             self._agendador.parar()
-        self.browser.fechar()
         log.info("NBS Agent encerrado.")
 
     # ------------------------------------------------------------------ #

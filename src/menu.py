@@ -54,7 +54,7 @@ def _desenhar(itens, sel, agendador=None):
     if agendador:
         print(f"\n  ⏰ Próximo relatório: {agendador.proximo_disparo()}")
 
-ITENS = ["Relatório diário", "Fábrica", "Transferência", "Status", "WhatsApp", "NBS", "Sair"]
+ITENS = ["Relatório diário", "Fábrica", "Transferência", "Status", "NBS", "Sair"]
 
 def rodar_menu(agente):
     sel = 0
@@ -77,9 +77,6 @@ def rodar_menu(agente):
             elif escolha == "Status":
                 if agente._agendador:
                     print(f"  ⏰ {agente._agendador.proximo_disparo()}")
-            elif escolha == "WhatsApp":
-                agente.browser.focar_whatsapp()
-                print("  → WhatsApp em foco.")
             elif escolha == "NBS":
                 agente.browser.focar_nbs()
                 print("  → NBS em foco.")

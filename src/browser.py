@@ -1,12 +1,11 @@
 """
 browser.py
 ----------
-Gerencia o Chrome via Selenium.
+Interface Selenium para o Chrome — já aberto pelo usuário.
 
-O login no NBS (Cloud Service + NBS Shortcut) é feito manualmente
-pelo usuário diretamente no sistema. Este módulo apenas abre o
-Chrome e a aba do WhatsApp; depois o controle é assumido pelos
-demais módulos de automação (relatórios, fábrica, transferência).
+Este módulo não abre o Chrome (o usuário já o abre manualmente com NBS logado).
+Funciona apenas para "focar" a janela do Chrome (trazer para frente) antes
+das automações usarem PyAutoGUI para clickar em elementos da tela.
 """
 
 import time
@@ -33,8 +32,8 @@ class Browser:
     # ------------------------------------------------------------------ #
 
     def iniciar(self):
-        """Abre o Chrome maximizado."""
-        log.info("Iniciando Chrome...")
+        """Conecta ao Chrome já aberto (não abre nova janela)."""
+        log.info("Conectando ao Chrome...")
         opts = Options()
         opts.add_experimental_option("excludeSwitches", ["enable-automation"])
         opts.add_argument("--disable-blink-features=AutomationControlled")
@@ -45,7 +44,7 @@ class Browser:
         service = Service(ChromeDriverManager().install())
         self.driver   = webdriver.Chrome(service=service, options=opts)
         self._aba_nbs = self.driver.current_window_handle
-        log.info("Chrome aberto.")
+        log.info("✓ Chrome conectado.")
 
     # ------------------------------------------------------------------ #
     #  WHATSAPP WEB                                                       #

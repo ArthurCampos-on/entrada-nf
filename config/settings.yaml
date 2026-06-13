@@ -3,9 +3,9 @@
 # Edite este arquivo com seus dados antes de rodar o sistema
 # ============================================================
 #
-# OBS: o login no NBS (Cloud Service + NBS Shortcut) é feito
-# manualmente pelo usuário antes de acionar as automações.
-# Por isso, não há mais credenciais de login configuradas aqui.
+# OBS: o agente é executado quando o Chrome JÁ ESTÁ ABERTO
+# e o usuário já está logado no NBS (Cloud Service + NBS Shortcut).
+# O agente apenas automatiza as operações dentro do sistema.
 
 agendador:
   # Horário do relatório diário automático (formato HH:MM)
@@ -25,9 +25,6 @@ automacao:
   timeout_elemento: 15
   # Quantas vezes tenta encontrar um elemento antes de desistir
   tentativas: 3
-
-whatsapp:
-  url: "https://web.whatsapp.com"
 
 logging:
   nivel: "INFO"
