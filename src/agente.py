@@ -1,14 +1,13 @@
 """
 agente.py
 ---------
-Orquestrador principal — une browser, RPAs, agendador e menu.
+Orquestrador principal — une RPAs, agendador e menu.
 
 OBS: o login no NBS (Cloud Service + NBS Shortcut) NÃO é feito por
 este agente. O usuário deve estar logado no sistema antes de usar
 as automações (relatórios, fábrica, transferência).
 """
 
-from src.browser           import Browser
 from src.tela              import Tela
 from src.rpa_relatorio     import RelatorioCompras
 from src.rpa_fabrica       import LancamentoFabrica
@@ -26,7 +25,6 @@ class NBSAgent:
             nivel   = cfg("logging.nivel",   "INFO"),
             arquivo = cfg("logging.arquivo", "data/logs/nbs_agent.log"),
         )
-        self.browser    = Browser()
         self.tela       = Tela()
         self._agendador = None
 
@@ -35,12 +33,10 @@ class NBSAgent:
     # ------------------------------------------------------------------ #
 
     def iniciar(self) -> bool:
-        """Inicializa o agente — conecta ao Chrome já aberto pelo usuário."""
+        """Inicializa o agente. O usuário já deve estar logado no NBS."""
         log.info("=" * 50)
         log.info("  NBS Agent iniciando...")
         log.info("=" * 50)
-
-        self.browser.iniciar()
         log.info("✓ Sistema pronto para automações.")
         return True
 
@@ -50,7 +46,7 @@ class NBSAgent:
         self._agendador.iniciar()
 
     def encerrar(self):
-        """Para o agendador. O Chrome fica aberto (usuário continua no sistema)."""
+        """Para o agendador."""
         if self._agendador:
             self._agendador.parar()
         log.info("NBS Agent encerrado.")
@@ -62,7 +58,6 @@ class NBSAgent:
     def relatorio_diario(self):
         """Gera o relatório de compras do dia anterior."""
         log.info("Iniciando relatório diário...")
-        self.browser.focar_nbs()
         ok = RelatorioCompras(self.tela).gerar_dia_anterior()
         if ok:
             print("  ✓ Relatório gerado com sucesso.")
@@ -75,7 +70,6 @@ class NBSAgent:
         notas = pedir_notas("fábrica")
         if not notas:
             return
-        self.browser.focar_nbs()
         resultados = LancamentoFabrica(self.tela).lancar_notas(notas)
         self._exibir_resultados(resultados)
 
@@ -84,7 +78,6 @@ class NBSAgent:
         notas = pedir_notas("transferência")
         if not notas:
             return
-        self.browser.focar_nbs()
         resultados = LancamentoTransferencia(self.tela).lancar_notas(notas)
         self._exibir_resultados(resultados)
 
