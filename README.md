@@ -72,10 +72,10 @@ Edite `config/settings.yaml`:
 ```yaml
 nbs:
   url: "http://10.32.1.139:85/"
-  cloud_usuario: "arthur.eugenio"   # login Cloud Service
+  cloud_usuario: "SEU_USUARIO"   # login Cloud Service
   cloud_senha:   "SUA_SENHA"
-  nbs_usuario:   "ARTHURE"          # login NBS Shortcut
-  nbs_senha:     "4321"
+  nbs_usuario:   "SEU_USUARIO"          # login NBS Shortcut
+  nbs_senha:     "SEU-USUARIO"
 ```
 
 ### 3. Verificar as imagens
@@ -100,8 +100,7 @@ e salve na pasta `imagens/` com o mesmo nome.
 python __main__.py
 ```
 
-Abre o Chrome com **duas abas** (NBS + WhatsApp Web), faz login automático
-e exibe o menu no terminal:
+O Navegador ja deve estar aberto e com a **pagina do nbs aberto**, deixe sempre o nbs no monitor principal. Após o comando ` python __main__.py` sera mostrado o menu no terminal.
 
 ```
 ╔══════════════════════════════════╗
@@ -110,9 +109,7 @@ e exibe o menu no terminal:
 ║  →  Relatório diário             ║
 ║     Fábrica                      ║
 ║     Transferência                ║
-║     Status                       ║
-║     WhatsApp                     ║
-║     NBS                          ║
+║     Status                       ║                        
 ║     Sair                         ║
 ╠══════════════════════════════════╣
 ║  ↑ ↓ navegar   Enter confirmar   ║
