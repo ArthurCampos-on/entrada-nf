@@ -6,3 +6,4 @@ opencv-python>=4.8      # Localiza imagens na tela (template matching)
 Pillow>=10.0            # Manipulação de imagens / screenshots
 pyyaml>=6.0             # Lê o arquivo de configuração
 loguru>=0.7             # Logs com cores e rotação automática
+pyperclip>=1.8          # [1] Cola texto via clipboard — suporta caracteres portugueses (ã, ç, é…)

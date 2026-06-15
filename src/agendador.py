@@ -1,15 +1,26 @@
-"""agendador.py — dispara relatório diário no horário configurado."""
-import threading, time
-from datetime import datetime
+"""
+agendador.py — dispara relatório diário no horário configurado.
+
+Melhoria [4] aplicada:
+  Em vez de dormir sempre 30 segundos (polling cego), o loop calcula
+  quantos segundos faltam para o próximo minuto inteiro e dorme esse tempo.
+  Resultado: CPU quase zero, e o disparo ocorre dentro de ±1 segundo
+  do horário configurado em vez de ±30 segundos.
+"""
+import threading
+import time
+from datetime import datetime, timedelta
+
 from src.config import cfg
 from src.logger import log
 
+
 class Agendador:
     def __init__(self, callback_relatorio):
-        self._cb       = callback_relatorio
-        self._horario  = cfg("agendador.horario_diario", "08:00")
-        self._rodando  = False
-        self._ultimo   = None
+        self._cb      = callback_relatorio
+        self._horario = cfg("agendador.horario_diario", "08:00")
+        self._rodando = False
+        self._ultimo  = None
 
     def iniciar(self):
         self._rodando = True
@@ -20,7 +31,6 @@ class Agendador:
         self._rodando = False
 
     def proximo_disparo(self) -> str:
-        from datetime import timedelta
         agora = datetime.now()
         h, m  = self._horario.split(":")
         prox  = agora.replace(hour=int(h), minute=int(m), second=0, microsecond=0)
@@ -30,13 +40,24 @@ class Agendador:
         return f"{self._horario} (em {int(diff.total_seconds()//3600)}h {int((diff.total_seconds()%3600)//60)}min)"
 
     def _loop(self):
+        """
+        [4] Dorme até o próximo minuto inteiro em vez de 30 s fixos.
+        Assim o disparo acontece dentro de ±1 s do horário configurado,
+        com consumo de CPU praticamente zero.
+        """
         while self._rodando:
             agora = datetime.now()
+
+            # Verifica se é hora de disparar
             if agora.strftime("%H:%M") == self._horario and agora.date() != self._ultimo:
-                log.info(f"⏰ Disparando relatório automático...")
+                log.info("⏰ Disparando relatório automático...")
                 try:
                     self._cb()
                 except Exception as e:
                     log.error(f"Erro no relatório automático: {e}")
                 self._ultimo = agora.date()
-            time.sleep(30)
+
+            # [4] Calcula tempo até o próximo minuto inteiro e dorme esse tanto.
+            # Garante mínimo de 5 s para não travar se o relógio estiver no exato segundo 0.
+            segundos_ate_proximo_minuto = 60 - agora.second
+            time.sleep(max(segundos_ate_proximo_minuto, 5))

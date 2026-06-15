@@ -19,12 +19,41 @@ imagens:
   confianca: 0.8
 
 automacao:
-  # Tempo de espera entre ações (segundos) - aumente se o PC for lento
+  # Tempo de espera entre ações (segundos) — aumente se o PC for lento
   delay_acao: 0.6
   # Tempo máximo esperando um elemento aparecer na tela (segundos)
   timeout_elemento: 15
-  # Quantas vezes tenta encontrar um elemento antes de desistir
+  # Quantas vezes consecutivas o elemento precisa ser detectado para ser
+  # considerado válido — evita falsos positivos por flicker de UI
   tentativas: 3
+
+# ── [5] Configurações de negócio ─────────────────────────────────────
+# Antes esses valores estavam hardcoded nos arquivos rpa_*.py.
+# Agora podem ser alterados aqui sem mexer no código.
+
+empresa:
+  # Texto digitado no campo de empresa para filtrar
+  nome_filtro: "Duna"
+  # Nome completo exibido na lista (usado como referência nos logs)
+  nome_completo: "Duna Tubarão"
+
+financeiro:
+  # Dias de entrada (prazo inicial do boleto)
+  entrada_dias: 60
+  # Intervalo entre parcelas (dias)
+  intervalo_dias: 60
+  # Número total de parcelas
+  total_parcelas: 1
+  # Tipo de pagamento selecionado no dropdown
+  tipo_pagamento: "Boleto Bancario"
+
+locacao:
+  # Código de locação padrão digitado no campo Locação
+  padrao: "SL"
+  # Opção de local selecionada no lançamento de fábrica
+  tipo_fabrica: "PRINCIPAL(PEÇAS)"
+  # Opção de local selecionada no lançamento de transferência
+  tipo_pecas: "PRINCIPAL(PEÇAS)"
 
 logging:
   nivel: "INFO"
