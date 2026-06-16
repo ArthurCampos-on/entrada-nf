@@ -111,11 +111,11 @@ class LancamentoFabrica:
     def _passos_1_3_abrir_interface(self):
         """Passos 1-3: Incluir → Compra → Interface."""
         log.debug("Passos 1-3: abrindo interface de compra...")
-        self.tela.clicar("botao_incluir_fabrica")
+        self.tela.clicar("botao_incluir")
         self.tela.esperar(0.5)
-        self.tela.clicar("botao_compra_fabrica")
+        self.tela.clicar("botao_compra")
         self.tela.esperar(0.5)
-        self.tela.clicar("botao_interface_fabrica")
+        self.tela.clicar("btn_interface")
         self.tela.esperar(1)
 
     def _passos_4_6_carregar_nota(self, numero: str):
@@ -123,13 +123,13 @@ class LancamentoFabrica:
         log.debug(f"Passos 4-6: carregando nota {numero}...")
         self.tela.clicar("placeholder_nota_fabrica")
         self.tela.limpar_e_digitar(numero)
-        self.tela.clicar("botao_pesquisar_notas_fabrica")
+        self.tela.clicar("btn_pesquisar_nota")
         self.tela.esperar(2)
 
     def _passo_7_aba_tributacao(self):
         """Passo 7: aba Definir Tributação/CFOP."""
         log.debug("Passo 7: aba Definir Tributação...")
-        self.tela.clicar("aba_definir_tributacao_fabrica")
+        self.tela.clicar("aba_definir_tributacao")
         self.tela.esperar(0.8)
 
     def _passos_8_9_definir_cfop(self):
@@ -139,67 +139,71 @@ class LancamentoFabrica:
         """
         log.debug("Passos 8-9: confirmando tela e clicando em Definir CFOP...")
         # Aguarda a tela de tributação aparecer (validação visual)
-        self.tela.aguardar("centro_definicao_tributos_fabrica")
+        self.tela.aguardar("area_centro")
         # Botão direito no centro fixo da tela
         self.tela.clique_direito_centro_tela()
         self.tela.esperar(0.5)
-        self.tela.clicar("definir_cfop_fabrica")
+        self.tela.clicar("definir_cfop")
         self.tela.esperar(1)
 
     def _passo_10_verificar_interface(self, numero: str) -> bool:
         """
-        Passo 10: verifica qual tela apareceu após Definir CFOP.
+        Passo 10: usuário informa o estado da tela de tributação.
 
-        Tela correta (interface_correta_tributos_fabrica) → continua.
-        Tela errada  (interface_errada_tributos_fabrica)  → pausa manual.
-            Usuário corrige e confirma Y para retomar.
-            O código então aguarda a tela correta aparecer.
+          1 → Tela correta — automação continua normalmente
+          2 → Tela errada  — usuário corrige e digita Y para continuar
+          3 → Pular esta nota
         """
-        log.debug("Passo 10: verificando interface de tributação...")
+        log.debug("Passo 10: aguardando confirmação da interface de tributação...")
         self.tela.esperar(1)
 
-        # Verifica tela errada primeiro
-        if self.tela.existe("interface_errada_tributos_fabrica"):
-            log.warning(f"Nota {numero}: tela errada de tributação detectada.")
-            ok = self.tela.pausar_para_usuario(
-                f"Nota {numero} — TELA ERRADA de tributação!\n"
-                "  Corrija manualmente até a tela correta aparecer.\n"
-                "  Pressione Y quando estiver na tela certa."
-            )
-            if not ok:
-                return False
-            # Aguarda tela correta após correção manual
-            self.tela.aguardar("interface_correta_tributos_fabrica")
-            return True
+        acao = self.tela.pedir_opcao(
+            f"Tributação — Nota {numero}",
+            {
+                "1": "Tela correta — continuar",
+                "2": "Tela errada — corrigir manualmente",
+                "3": "Pular esta nota",
+            }
+        )
 
-        # Aguarda tela correta (pode ainda estar carregando)
-        self.tela.aguardar("interface_correta_tributos_fabrica")
-        log.debug("Passo 10: tela correta confirmada.")
+        if acao == "3":
+            log.info(f"Nota {numero}: pulada na verificação de tributação.")
+            return False
+
+        if acao == "2":
+            log.warning(f"Nota {numero}: correção manual de tributação.")
+            return self.tela.pausar_para_usuario(
+                f"Nota {numero} — corrija a tributação manualmente.\n"
+                "  Pressione Y quando estiver na tela correta."
+            )
+
+        # acao == "1": tela correta confirmada pelo usuário
+        log.debug("Passo 10: tributação confirmada.")
         return True
 
     def _passo_11_tributados(self):
         """Passo 11: clicar em Tributados (dropdown)."""
         log.debug("Passo 11: Tributados...")
-        self.tela.clicar("placeholder_tributados_fabrica")
+        self.tela.clicar("campo_tributos")
         self.tela.esperar(0.5)
 
     def _passo_12_pecas_acessorios(self):
         """Passo 12: selecionar Compra Peças e Acessórios."""
         log.debug("Passo 12: Compra Peças e Acessórios...")
-        self.tela.clicar("selecao_pecas_acessorios_fabrica")
+        self.tela.clicar("selecao_pecas_acessorios")
         self.tela.esperar(0.3)
 
     def _passo_13_ok(self):
         log.debug("Passo 13: OK...")
-        self.tela.clicar("botao_ok_tributados")
+        self.tela.clicar("btn_ok")
 
     def _passo_14_aceitar(self):
         log.debug("Passo 14: Aceitar...")
-        self.tela.clicar("botao_aceitar_fabrica")
+        self.tela.clicar("btn_aceitar")
 
     def _passo_15_aba_cruzamento(self):
         log.debug("Passo 15: aba Cruzamento de Pedidos...")
-        self.tela.clicar("aba_cruzamento_fabrica")
+        self.tela.clicar("aba_cruzamento_pedidos")
         self.tela.esperar(1)
 
     def _passo_16_manual_cruzamento(self, numero: str) -> str:
@@ -232,10 +236,10 @@ class LancamentoFabrica:
 
         # acao == "1": tenta clicar na seta
         log.debug("Tentando cruzamento automático...")
-        if self.tela.existe("seta_fabrica"):
-            self.tela.clicar("seta_fabrica")
+        if self.tela.existe("seta_cruzamento"):
+            self.tela.clicar("seta_cruzamento")
             self.tela.esperar(0.5)
-            self.tela.clicar("botao_confirmar_pedido_fabrica")
+            self.tela.clicar("botao_confirmar")
             log.debug("Cruzamento automático concluído.")
             return "locacoes"
 
@@ -253,13 +257,13 @@ class LancamentoFabrica:
         Passos 17-21: aba Locações → placeholder → PRINCIPAL(PEÇAS) → SL → Enter.
         """
         log.debug(f"Passos 17-21: locações (tipo={self._locacao_tipo}, cód={self._locacao_padrao})...")
-        self.tela.clicar("locacao_aba_fabrica")
+        self.tela.clicar("aba_locacao")
         self.tela.esperar(0.8)
-        self.tela.clicar("placeholder_locacao_fabrica")
+        self.tela.clicar("campo_locacao")
         self.tela.esperar(0.5)
-        self.tela.clicar("principal_pecas_fabrica")
+        self.tela.clicar("principal_pecas")
         self.tela.esperar(0.5)
-        self.tela.clicar("placeholder_padrao_fabrica")
+        self.tela.clicar("locacao_padrao")
         self.tela.digitar(self._locacao_padrao)   # "SL"
         self.tela.tecla("enter")
         self.tela.esperar(0.5)
@@ -274,7 +278,7 @@ class LancamentoFabrica:
             f"(entrada={self._fin_entrada}d, intervalo={self._fin_intervalo}d, "
             f"parcelas={self._fin_parcelas}, pgto={self._fin_pagamento})..."
         )
-        self.tela.clicar("aba_financeiro_fabrica")
+        self.tela.clicar("aba_financeiro")
         self.tela.esperar(0.8)
         self.tela.digitar(self._fin_entrada)
         self.tela.tecla("enter")
@@ -289,7 +293,7 @@ class LancamentoFabrica:
     def _passo_24_confirmar(self):
         """Passo 24: Confirmar — fecha o lançamento."""
         log.debug("Passo 24: Confirmar final...")
-        self.tela.clicar("botao_confirmar_final_fabrica")
+        self.tela.clicar("botao_confirmar_final")
         self.tela.esperar(1.5)
 
     def _passo_25_teclado_final(self):

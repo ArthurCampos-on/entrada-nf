@@ -75,19 +75,19 @@ class LancamentoTransferencia:
         self.tela.esperar(0.5)
         self.tela.clicar("botao_transferencia")
         self.tela.esperar(0.5)
-        self.tela.clicar("botao_interface_relatorio")
+        self.tela.clicar("btn_interface")
         self.tela.esperar(0.5)
-        self.tela.clicar("botao_nota_saida_transferencia")
+        self.tela.clicar("btn_interface_saida")
         self.tela.esperar(1)
 
     def _passo_5_pesquisar(self):
         log.debug("Passo 5: pesquisar...")
-        self.tela.clicar("botao_pesquisa_transferencia")
+        self.tela.clicar("btn_pesquisar_transf")
         self.tela.esperar(1.5)
 
     def _passo_6_aceitar(self):
         log.debug("Passo 6: Aceitar...")
-        self.tela.clicar("botao_aceitar_transferencia")
+        self.tela.clicar("btn_aceitar")
 
     def _passo_7_enter(self):
         """Passo 7: Enter após Aceitar."""

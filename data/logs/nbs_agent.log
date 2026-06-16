@@ -27,3 +27,277 @@
 2026-06-13 21:40:36 | INFO    | ✓ Sistema pronto para automações.
 2026-06-13 21:40:36 | INFO    | ⏰ Agendador iniciado — relatório às 08:00
 2026-06-13 21:40:43 | INFO    | NBS Agent encerrado.
+2026-06-15 12:51:06 | INFO    | ==================================================
+2026-06-15 12:51:06 | INFO    |   NBS Agent iniciando...
+2026-06-15 12:51:06 | INFO    | ==================================================
+2026-06-15 12:51:06 | INFO    | ✓ Sistema pronto para automações.
+2026-06-15 12:51:06 | INFO    | ⏰ Agendador iniciado — relatório às 08:00
+2026-06-15 12:56:24 | INFO    | [1/2] Fábrica: 193613
+2026-06-15 12:56:24 | WARNING | Imagem não encontrada: imagens\botao_incluir_fabrica.png
+2026-06-15 12:56:25 | WARNING | Imagem não encontrada: imagens\botao_incluir_fabrica.png
+2026-06-15 12:56:25 | WARNING | Imagem não encontrada: imagens\botao_incluir_fabrica.png
+2026-06-15 12:56:26 | WARNING | Imagem não encontrada: imagens\botao_incluir_fabrica.png
+2026-06-15 12:56:26 | WARNING | Imagem não encontrada: imagens\botao_incluir_fabrica.png
+2026-06-15 12:56:27 | WARNING | Imagem não encontrada: imagens\botao_incluir_fabrica.png
+2026-06-15 12:56:27 | WARNING | Imagem não encontrada: imagens\botao_incluir_fabrica.png
+2026-06-15 12:56:28 | WARNING | Imagem não encontrada: imagens\botao_incluir_fabrica.png
+2026-06-15 12:56:28 | WARNING | Imagem não encontrada: imagens\botao_incluir_fabrica.png
+2026-06-15 12:56:29 | WARNING | Imagem não encontrada: imagens\botao_incluir_fabrica.png
+2026-06-15 12:56:29 | WARNING | Imagem não encontrada: imagens\botao_incluir_fabrica.png
+2026-06-15 12:56:30 | WARNING | Imagem não encontrada: imagens\botao_incluir_fabrica.png
+2026-06-15 12:56:30 | WARNING | Imagem não encontrada: imagens\botao_incluir_fabrica.png
+2026-06-15 12:56:31 | WARNING | Imagem não encontrada: imagens\botao_incluir_fabrica.png
+2026-06-15 12:56:31 | WARNING | Imagem não encontrada: imagens\botao_incluir_fabrica.png
+2026-06-15 12:56:32 | WARNING | Imagem não encontrada: imagens\botao_incluir_fabrica.png
+2026-06-15 12:56:32 | WARNING | Imagem não encontrada: imagens\botao_incluir_fabrica.png
+2026-06-15 12:56:33 | WARNING | Imagem não encontrada: imagens\botao_incluir_fabrica.png
+2026-06-15 12:56:33 | WARNING | Imagem não encontrada: imagens\botao_incluir_fabrica.png
+2026-06-15 12:56:34 | WARNING | Imagem não encontrada: imagens\botao_incluir_fabrica.png
+2026-06-15 12:56:34 | WARNING | Imagem não encontrada: imagens\botao_incluir_fabrica.png
+2026-06-15 12:56:35 | WARNING | Imagem não encontrada: imagens\botao_incluir_fabrica.png
+2026-06-15 12:56:35 | WARNING | Imagem não encontrada: imagens\botao_incluir_fabrica.png
+2026-06-15 12:56:36 | WARNING | Imagem não encontrada: imagens\botao_incluir_fabrica.png
+2026-06-15 12:56:36 | WARNING | Imagem não encontrada: imagens\botao_incluir_fabrica.png
+2026-06-15 12:56:37 | WARNING | Imagem não encontrada: imagens\botao_incluir_fabrica.png
+2026-06-15 12:56:37 | WARNING | Imagem não encontrada: imagens\botao_incluir_fabrica.png
+2026-06-15 12:56:38 | WARNING | Imagem não encontrada: imagens\botao_incluir_fabrica.png
+2026-06-15 12:56:38 | WARNING | Imagem não encontrada: imagens\botao_incluir_fabrica.png
+2026-06-15 12:56:39 | WARNING | Imagem não encontrada: imagens\botao_incluir_fabrica.png
+2026-06-15 12:56:39 | ERROR   | Timeout na nota 193613: 'botao_incluir_fabrica' não apareceu em 15s
+2026-06-15 12:56:41 | INFO    | [2/2] Fábrica: 193883
+2026-06-15 12:56:41 | WARNING | Imagem não encontrada: imagens\botao_incluir_fabrica.png
+2026-06-15 12:56:41 | WARNING | Imagem não encontrada: imagens\botao_incluir_fabrica.png
+2026-06-15 12:56:42 | WARNING | Imagem não encontrada: imagens\botao_incluir_fabrica.png
+2026-06-15 12:56:42 | WARNING | Imagem não encontrada: imagens\botao_incluir_fabrica.png
+2026-06-15 12:56:43 | WARNING | Imagem não encontrada: imagens\botao_incluir_fabrica.png
+2026-06-15 12:56:43 | WARNING | Imagem não encontrada: imagens\botao_incluir_fabrica.png
+2026-06-15 12:56:44 | WARNING | Imagem não encontrada: imagens\botao_incluir_fabrica.png
+2026-06-15 12:56:44 | WARNING | Imagem não encontrada: imagens\botao_incluir_fabrica.png
+2026-06-15 12:56:45 | WARNING | Imagem não encontrada: imagens\botao_incluir_fabrica.png
+2026-06-15 12:56:45 | WARNING | Imagem não encontrada: imagens\botao_incluir_fabrica.png
+2026-06-15 12:56:46 | WARNING | Imagem não encontrada: imagens\botao_incluir_fabrica.png
+2026-06-15 12:56:46 | WARNING | Imagem não encontrada: imagens\botao_incluir_fabrica.png
+2026-06-15 12:56:47 | WARNING | Imagem não encontrada: imagens\botao_incluir_fabrica.png
+2026-06-15 12:56:47 | WARNING | Imagem não encontrada: imagens\botao_incluir_fabrica.png
+2026-06-15 12:56:48 | WARNING | Imagem não encontrada: imagens\botao_incluir_fabrica.png
+2026-06-15 12:56:48 | WARNING | Imagem não encontrada: imagens\botao_incluir_fabrica.png
+2026-06-15 12:56:49 | WARNING | Imagem não encontrada: imagens\botao_incluir_fabrica.png
+2026-06-15 12:56:49 | WARNING | Imagem não encontrada: imagens\botao_incluir_fabrica.png
+2026-06-15 12:56:50 | WARNING | Imagem não encontrada: imagens\botao_incluir_fabrica.png
+2026-06-15 12:56:50 | WARNING | Imagem não encontrada: imagens\botao_incluir_fabrica.png
+2026-06-15 12:56:51 | WARNING | Imagem não encontrada: imagens\botao_incluir_fabrica.png
+2026-06-15 12:56:51 | WARNING | Imagem não encontrada: imagens\botao_incluir_fabrica.png
+2026-06-15 12:56:52 | WARNING | Imagem não encontrada: imagens\botao_incluir_fabrica.png
+2026-06-15 12:56:52 | WARNING | Imagem não encontrada: imagens\botao_incluir_fabrica.png
+2026-06-15 12:56:53 | WARNING | Imagem não encontrada: imagens\botao_incluir_fabrica.png
+2026-06-15 12:56:53 | WARNING | Imagem não encontrada: imagens\botao_incluir_fabrica.png
+2026-06-15 12:56:54 | WARNING | Imagem não encontrada: imagens\botao_incluir_fabrica.png
+2026-06-15 12:56:54 | WARNING | Imagem não encontrada: imagens\botao_incluir_fabrica.png
+2026-06-15 12:59:01 | INFO    | ==================================================
+2026-06-15 12:59:01 | INFO    |   NBS Agent iniciando...
+2026-06-15 12:59:01 | INFO    | ==================================================
+2026-06-15 12:59:01 | INFO    | ✓ Sistema pronto para automações.
+2026-06-15 12:59:01 | INFO    | ⏰ Agendador iniciado — relatório às 08:00
+2026-06-15 13:00:28 | INFO    | [1/1] Fábrica: 193613
+2026-06-15 13:00:28 | WARNING | Imagem não encontrada: imagens\botao_incluir_fabrica.png
+2026-06-15 13:00:29 | WARNING | Imagem não encontrada: imagens\botao_incluir_fabrica.png
+2026-06-15 13:00:29 | WARNING | Imagem não encontrada: imagens\botao_incluir_fabrica.png
+2026-06-15 13:00:30 | WARNING | Imagem não encontrada: imagens\botao_incluir_fabrica.png
+2026-06-15 13:00:30 | WARNING | Imagem não encontrada: imagens\botao_incluir_fabrica.png
+2026-06-15 13:00:31 | WARNING | Imagem não encontrada: imagens\botao_incluir_fabrica.png
+2026-06-15 13:00:31 | WARNING | Imagem não encontrada: imagens\botao_incluir_fabrica.png
+2026-06-15 13:00:32 | WARNING | Imagem não encontrada: imagens\botao_incluir_fabrica.png
+2026-06-15 13:00:32 | WARNING | Imagem não encontrada: imagens\botao_incluir_fabrica.png
+2026-06-15 13:00:33 | WARNING | Imagem não encontrada: imagens\botao_incluir_fabrica.png
+2026-06-15 13:00:33 | WARNING | Imagem não encontrada: imagens\botao_incluir_fabrica.png
+2026-06-15 13:00:34 | WARNING | Imagem não encontrada: imagens\botao_incluir_fabrica.png
+2026-06-15 13:00:34 | WARNING | Imagem não encontrada: imagens\botao_incluir_fabrica.png
+2026-06-15 13:00:35 | WARNING | Imagem não encontrada: imagens\botao_incluir_fabrica.png
+2026-06-15 13:00:35 | WARNING | Imagem não encontrada: imagens\botao_incluir_fabrica.png
+2026-06-15 13:00:36 | WARNING | Imagem não encontrada: imagens\botao_incluir_fabrica.png
+2026-06-15 13:00:36 | WARNING | Imagem não encontrada: imagens\botao_incluir_fabrica.png
+2026-06-15 13:00:37 | WARNING | Imagem não encontrada: imagens\botao_incluir_fabrica.png
+2026-06-15 13:00:37 | WARNING | Imagem não encontrada: imagens\botao_incluir_fabrica.png
+2026-06-15 13:00:38 | WARNING | Imagem não encontrada: imagens\botao_incluir_fabrica.png
+2026-06-15 13:00:38 | WARNING | Imagem não encontrada: imagens\botao_incluir_fabrica.png
+2026-06-15 13:00:39 | WARNING | Imagem não encontrada: imagens\botao_incluir_fabrica.png
+2026-06-15 13:00:39 | WARNING | Imagem não encontrada: imagens\botao_incluir_fabrica.png
+2026-06-15 13:00:40 | WARNING | Imagem não encontrada: imagens\botao_incluir_fabrica.png
+2026-06-15 13:00:40 | WARNING | Imagem não encontrada: imagens\botao_incluir_fabrica.png
+2026-06-15 13:00:41 | WARNING | Imagem não encontrada: imagens\botao_incluir_fabrica.png
+2026-06-15 13:00:41 | WARNING | Imagem não encontrada: imagens\botao_incluir_fabrica.png
+2026-06-15 13:00:42 | WARNING | Imagem não encontrada: imagens\botao_incluir_fabrica.png
+2026-06-15 13:00:42 | WARNING | Imagem não encontrada: imagens\botao_incluir_fabrica.png
+2026-06-15 13:00:43 | WARNING | Imagem não encontrada: imagens\botao_incluir_fabrica.png
+2026-06-15 13:00:44 | ERROR   | Timeout na nota 193613: 'botao_incluir_fabrica' não apareceu em 15s
+2026-06-15 13:01:03 | INFO    | [1/1] Transferência: 193613
+2026-06-15 13:01:03 | WARNING | Imagem não encontrada: imagens\botao_incluir_transferencia.png
+2026-06-15 13:01:04 | WARNING | Imagem não encontrada: imagens\botao_incluir_transferencia.png
+2026-06-15 13:01:04 | WARNING | Imagem não encontrada: imagens\botao_incluir_transferencia.png
+2026-06-15 13:01:05 | WARNING | Imagem não encontrada: imagens\botao_incluir_transferencia.png
+2026-06-15 13:01:05 | WARNING | Imagem não encontrada: imagens\botao_incluir_transferencia.png
+2026-06-15 13:01:06 | WARNING | Imagem não encontrada: imagens\botao_incluir_transferencia.png
+2026-06-15 13:01:06 | WARNING | Imagem não encontrada: imagens\botao_incluir_transferencia.png
+2026-06-15 13:01:07 | WARNING | Imagem não encontrada: imagens\botao_incluir_transferencia.png
+2026-06-15 13:01:07 | WARNING | Imagem não encontrada: imagens\botao_incluir_transferencia.png
+2026-06-15 13:01:08 | WARNING | Imagem não encontrada: imagens\botao_incluir_transferencia.png
+2026-06-15 13:01:08 | WARNING | Imagem não encontrada: imagens\botao_incluir_transferencia.png
+2026-06-15 13:01:09 | WARNING | Imagem não encontrada: imagens\botao_incluir_transferencia.png
+2026-06-15 13:01:09 | WARNING | Imagem não encontrada: imagens\botao_incluir_transferencia.png
+2026-06-15 13:01:10 | WARNING | Imagem não encontrada: imagens\botao_incluir_transferencia.png
+2026-06-15 13:01:10 | WARNING | Imagem não encontrada: imagens\botao_incluir_transferencia.png
+2026-06-15 13:01:11 | WARNING | Imagem não encontrada: imagens\botao_incluir_transferencia.png
+2026-06-15 13:01:11 | WARNING | Imagem não encontrada: imagens\botao_incluir_transferencia.png
+2026-06-15 13:01:12 | WARNING | Imagem não encontrada: imagens\botao_incluir_transferencia.png
+2026-06-15 13:01:12 | WARNING | Imagem não encontrada: imagens\botao_incluir_transferencia.png
+2026-06-15 13:01:13 | WARNING | Imagem não encontrada: imagens\botao_incluir_transferencia.png
+2026-06-15 13:01:13 | WARNING | Imagem não encontrada: imagens\botao_incluir_transferencia.png
+2026-06-15 13:01:14 | WARNING | Imagem não encontrada: imagens\botao_incluir_transferencia.png
+2026-06-15 13:01:14 | WARNING | Imagem não encontrada: imagens\botao_incluir_transferencia.png
+2026-06-15 13:01:15 | WARNING | Imagem não encontrada: imagens\botao_incluir_transferencia.png
+2026-06-15 13:01:15 | WARNING | Imagem não encontrada: imagens\botao_incluir_transferencia.png
+2026-06-15 13:01:16 | WARNING | Imagem não encontrada: imagens\botao_incluir_transferencia.png
+2026-06-15 13:01:16 | WARNING | Imagem não encontrada: imagens\botao_incluir_transferencia.png
+2026-06-15 13:01:17 | WARNING | Imagem não encontrada: imagens\botao_incluir_transferencia.png
+2026-06-15 13:01:17 | WARNING | Imagem não encontrada: imagens\botao_incluir_transferencia.png
+2026-06-15 13:01:18 | WARNING | Imagem não encontrada: imagens\botao_incluir_transferencia.png
+2026-06-15 13:01:19 | ERROR   | Timeout na transferência 193613: 'botao_incluir_transferencia' não apareceu em 15s
+2026-06-15 13:03:23 | INFO    | [1/1] Fábrica: 193613
+2026-06-15 13:03:23 | WARNING | Imagem não encontrada: imagens\botao_incluir_fabrica.png
+2026-06-15 13:03:24 | WARNING | Imagem não encontrada: imagens\botao_incluir_fabrica.png
+2026-06-15 13:03:24 | WARNING | Imagem não encontrada: imagens\botao_incluir_fabrica.png
+2026-06-15 13:03:25 | WARNING | Imagem não encontrada: imagens\botao_incluir_fabrica.png
+2026-06-15 13:03:25 | WARNING | Imagem não encontrada: imagens\botao_incluir_fabrica.png
+2026-06-15 13:03:26 | WARNING | Imagem não encontrada: imagens\botao_incluir_fabrica.png
+2026-06-15 13:03:26 | WARNING | Imagem não encontrada: imagens\botao_incluir_fabrica.png
+2026-06-15 13:03:27 | WARNING | Imagem não encontrada: imagens\botao_incluir_fabrica.png
+2026-06-15 13:03:27 | WARNING | Imagem não encontrada: imagens\botao_incluir_fabrica.png
+2026-06-15 13:03:28 | WARNING | Imagem não encontrada: imagens\botao_incluir_fabrica.png
+2026-06-15 13:03:28 | WARNING | Imagem não encontrada: imagens\botao_incluir_fabrica.png
+2026-06-15 13:03:29 | WARNING | Imagem não encontrada: imagens\botao_incluir_fabrica.png
+2026-06-15 13:03:29 | WARNING | Imagem não encontrada: imagens\botao_incluir_fabrica.png
+2026-06-15 13:03:30 | WARNING | Imagem não encontrada: imagens\botao_incluir_fabrica.png
+2026-06-15 13:03:30 | WARNING | Imagem não encontrada: imagens\botao_incluir_fabrica.png
+2026-06-15 13:03:31 | WARNING | Imagem não encontrada: imagens\botao_incluir_fabrica.png
+2026-06-15 13:03:31 | WARNING | Imagem não encontrada: imagens\botao_incluir_fabrica.png
+2026-06-15 13:03:32 | WARNING | Imagem não encontrada: imagens\botao_incluir_fabrica.png
+2026-06-15 13:03:32 | WARNING | Imagem não encontrada: imagens\botao_incluir_fabrica.png
+2026-06-15 13:03:33 | WARNING | Imagem não encontrada: imagens\botao_incluir_fabrica.png
+2026-06-15 13:03:33 | WARNING | Imagem não encontrada: imagens\botao_incluir_fabrica.png
+2026-06-15 13:03:34 | WARNING | Imagem não encontrada: imagens\botao_incluir_fabrica.png
+2026-06-15 13:03:34 | WARNING | Imagem não encontrada: imagens\botao_incluir_fabrica.png
+2026-06-15 13:03:35 | WARNING | Imagem não encontrada: imagens\botao_incluir_fabrica.png
+2026-06-15 13:03:35 | WARNING | Imagem não encontrada: imagens\botao_incluir_fabrica.png
+2026-06-15 13:03:36 | WARNING | Imagem não encontrada: imagens\botao_incluir_fabrica.png
+2026-06-15 13:03:36 | WARNING | Imagem não encontrada: imagens\botao_incluir_fabrica.png
+2026-06-15 13:03:37 | WARNING | Imagem não encontrada: imagens\botao_incluir_fabrica.png
+2026-06-15 13:03:37 | WARNING | Imagem não encontrada: imagens\botao_incluir_fabrica.png
+2026-06-15 13:03:38 | WARNING | Imagem não encontrada: imagens\botao_incluir_fabrica.png
+2026-06-15 13:03:38 | ERROR   | Timeout na nota 193613: 'botao_incluir_fabrica' não apareceu em 15s
+2026-06-15 13:04:15 | INFO    | [1/1] Fábrica: 193613
+2026-06-15 13:04:19 | WARNING | Imagem não encontrada: imagens\botao_compra_fabrica.png
+2026-06-15 13:04:19 | WARNING | Imagem não encontrada: imagens\botao_compra_fabrica.png
+2026-06-15 13:04:20 | WARNING | Imagem não encontrada: imagens\botao_compra_fabrica.png
+2026-06-15 13:04:20 | WARNING | Imagem não encontrada: imagens\botao_compra_fabrica.png
+2026-06-15 13:04:21 | WARNING | Imagem não encontrada: imagens\botao_compra_fabrica.png
+2026-06-15 13:04:21 | WARNING | Imagem não encontrada: imagens\botao_compra_fabrica.png
+2026-06-15 13:04:22 | WARNING | Imagem não encontrada: imagens\botao_compra_fabrica.png
+2026-06-15 13:04:22 | WARNING | Imagem não encontrada: imagens\botao_compra_fabrica.png
+2026-06-15 13:04:23 | WARNING | Imagem não encontrada: imagens\botao_compra_fabrica.png
+2026-06-15 13:04:23 | WARNING | Imagem não encontrada: imagens\botao_compra_fabrica.png
+2026-06-15 13:04:24 | WARNING | Imagem não encontrada: imagens\botao_compra_fabrica.png
+2026-06-15 13:04:24 | WARNING | Imagem não encontrada: imagens\botao_compra_fabrica.png
+2026-06-15 13:04:25 | WARNING | Imagem não encontrada: imagens\botao_compra_fabrica.png
+2026-06-15 13:04:25 | WARNING | Imagem não encontrada: imagens\botao_compra_fabrica.png
+2026-06-15 13:04:26 | WARNING | Imagem não encontrada: imagens\botao_compra_fabrica.png
+2026-06-15 13:04:26 | WARNING | Imagem não encontrada: imagens\botao_compra_fabrica.png
+2026-06-15 13:04:27 | WARNING | Imagem não encontrada: imagens\botao_compra_fabrica.png
+2026-06-15 13:04:27 | WARNING | Imagem não encontrada: imagens\botao_compra_fabrica.png
+2026-06-15 13:04:28 | WARNING | Imagem não encontrada: imagens\botao_compra_fabrica.png
+2026-06-15 13:04:28 | WARNING | Imagem não encontrada: imagens\botao_compra_fabrica.png
+2026-06-15 13:04:29 | WARNING | Imagem não encontrada: imagens\botao_compra_fabrica.png
+2026-06-15 13:04:29 | WARNING | Imagem não encontrada: imagens\botao_compra_fabrica.png
+2026-06-15 13:04:30 | WARNING | Imagem não encontrada: imagens\botao_compra_fabrica.png
+2026-06-15 13:04:30 | WARNING | Imagem não encontrada: imagens\botao_compra_fabrica.png
+2026-06-15 13:04:31 | WARNING | Imagem não encontrada: imagens\botao_compra_fabrica.png
+2026-06-15 13:04:31 | WARNING | Imagem não encontrada: imagens\botao_compra_fabrica.png
+2026-06-15 13:04:32 | WARNING | Imagem não encontrada: imagens\botao_compra_fabrica.png
+2026-06-15 13:04:32 | WARNING | Imagem não encontrada: imagens\botao_compra_fabrica.png
+2026-06-15 13:04:33 | WARNING | Imagem não encontrada: imagens\botao_compra_fabrica.png
+2026-06-15 13:04:33 | WARNING | Imagem não encontrada: imagens\botao_compra_fabrica.png
+2026-06-15 13:04:34 | ERROR   | Timeout na nota 193613: 'botao_compra_fabrica' não apareceu em 15s
+2026-06-15 17:04:01 | INFO    | ==================================================
+2026-06-15 17:04:01 | INFO    |   NBS Agent iniciando...
+2026-06-15 17:04:01 | INFO    | ==================================================
+2026-06-15 17:04:01 | INFO    | ✓ Sistema pronto para automações.
+2026-06-15 17:04:01 | INFO    | ⏰ Agendador iniciado — relatório às 08:00
+2026-06-15 17:04:21 | INFO    | [1/1] Fábrica: 194726
+2026-06-15 17:04:25 | WARNING | Imagem não encontrada: imagens\botao_compra_fabrica.png
+2026-06-15 17:04:25 | WARNING | Imagem não encontrada: imagens\botao_compra_fabrica.png
+2026-06-15 17:04:26 | WARNING | Imagem não encontrada: imagens\botao_compra_fabrica.png
+2026-06-15 17:04:26 | WARNING | Imagem não encontrada: imagens\botao_compra_fabrica.png
+2026-06-15 17:04:27 | WARNING | Imagem não encontrada: imagens\botao_compra_fabrica.png
+2026-06-15 17:04:27 | WARNING | Imagem não encontrada: imagens\botao_compra_fabrica.png
+2026-06-15 17:04:28 | WARNING | Imagem não encontrada: imagens\botao_compra_fabrica.png
+2026-06-15 17:04:28 | WARNING | Imagem não encontrada: imagens\botao_compra_fabrica.png
+2026-06-15 17:04:29 | WARNING | Imagem não encontrada: imagens\botao_compra_fabrica.png
+2026-06-15 17:04:29 | WARNING | Imagem não encontrada: imagens\botao_compra_fabrica.png
+2026-06-15 17:04:30 | WARNING | Imagem não encontrada: imagens\botao_compra_fabrica.png
+2026-06-15 17:04:30 | WARNING | Imagem não encontrada: imagens\botao_compra_fabrica.png
+2026-06-15 17:04:31 | WARNING | Imagem não encontrada: imagens\botao_compra_fabrica.png
+2026-06-15 17:04:31 | WARNING | Imagem não encontrada: imagens\botao_compra_fabrica.png
+2026-06-15 17:04:32 | WARNING | Imagem não encontrada: imagens\botao_compra_fabrica.png
+2026-06-15 17:04:32 | WARNING | Imagem não encontrada: imagens\botao_compra_fabrica.png
+2026-06-15 17:04:33 | WARNING | Imagem não encontrada: imagens\botao_compra_fabrica.png
+2026-06-15 17:04:33 | WARNING | Imagem não encontrada: imagens\botao_compra_fabrica.png
+2026-06-15 17:04:34 | WARNING | Imagem não encontrada: imagens\botao_compra_fabrica.png
+2026-06-15 17:04:34 | WARNING | Imagem não encontrada: imagens\botao_compra_fabrica.png
+2026-06-15 17:04:35 | WARNING | Imagem não encontrada: imagens\botao_compra_fabrica.png
+2026-06-15 17:04:35 | WARNING | Imagem não encontrada: imagens\botao_compra_fabrica.png
+2026-06-15 17:04:36 | WARNING | Imagem não encontrada: imagens\botao_compra_fabrica.png
+2026-06-15 17:04:36 | WARNING | Imagem não encontrada: imagens\botao_compra_fabrica.png
+2026-06-15 17:04:37 | WARNING | Imagem não encontrada: imagens\botao_compra_fabrica.png
+2026-06-15 17:04:37 | WARNING | Imagem não encontrada: imagens\botao_compra_fabrica.png
+2026-06-15 17:04:38 | WARNING | Imagem não encontrada: imagens\botao_compra_fabrica.png
+2026-06-15 17:04:38 | WARNING | Imagem não encontrada: imagens\botao_compra_fabrica.png
+2026-06-15 17:04:39 | WARNING | Imagem não encontrada: imagens\botao_compra_fabrica.png
+2026-06-15 17:04:40 | WARNING | Imagem não encontrada: imagens\botao_compra_fabrica.png
+2026-06-15 17:04:40 | ERROR   | Timeout na nota 194726: 'botao_compra_fabrica' não apareceu em 15s
+2026-06-15 17:30:19 | INFO    | ==================================================
+2026-06-15 17:30:19 | INFO    |   NBS Agent iniciando...
+2026-06-15 17:30:19 | INFO    | ==================================================
+2026-06-15 17:30:19 | INFO    | ✓ Sistema pronto para automações.
+2026-06-15 17:30:19 | INFO    | ⏰ Agendador iniciado — relatório às 08:00
+2026-06-15 17:30:32 | INFO    | [1/1] Fábrica: 194854
+2026-06-15 17:31:07 | WARNING | Imagem não encontrada: imagens\interface_errada_tributos.png
+2026-06-15 17:31:07 | WARNING | Imagem não encontrada: imagens\interface_correta_tributos.png
+2026-06-15 17:31:08 | WARNING | Imagem não encontrada: imagens\interface_correta_tributos.png
+2026-06-15 17:31:08 | WARNING | Imagem não encontrada: imagens\interface_correta_tributos.png
+2026-06-15 17:31:09 | WARNING | Imagem não encontrada: imagens\interface_correta_tributos.png
+2026-06-15 17:31:09 | WARNING | Imagem não encontrada: imagens\interface_correta_tributos.png
+2026-06-15 17:31:10 | WARNING | Imagem não encontrada: imagens\interface_correta_tributos.png
+2026-06-15 17:31:10 | WARNING | Imagem não encontrada: imagens\interface_correta_tributos.png
+2026-06-15 17:31:11 | WARNING | Imagem não encontrada: imagens\interface_correta_tributos.png
+2026-06-15 17:31:11 | WARNING | Imagem não encontrada: imagens\interface_correta_tributos.png
+2026-06-15 17:31:12 | WARNING | Imagem não encontrada: imagens\interface_correta_tributos.png
+2026-06-15 17:31:12 | WARNING | Imagem não encontrada: imagens\interface_correta_tributos.png
+2026-06-15 17:31:13 | WARNING | Imagem não encontrada: imagens\interface_correta_tributos.png
+2026-06-15 17:31:13 | WARNING | Imagem não encontrada: imagens\interface_correta_tributos.png
+2026-06-15 17:31:14 | WARNING | Imagem não encontrada: imagens\interface_correta_tributos.png
+2026-06-15 17:31:14 | WARNING | Imagem não encontrada: imagens\interface_correta_tributos.png
+2026-06-15 17:31:15 | WARNING | Imagem não encontrada: imagens\interface_correta_tributos.png
+2026-06-15 17:31:15 | WARNING | Imagem não encontrada: imagens\interface_correta_tributos.png
+2026-06-15 17:31:16 | WARNING | Imagem não encontrada: imagens\interface_correta_tributos.png
+2026-06-15 17:31:16 | WARNING | Imagem não encontrada: imagens\interface_correta_tributos.png
+2026-06-15 17:31:17 | WARNING | Imagem não encontrada: imagens\interface_correta_tributos.png
+2026-06-15 17:31:17 | WARNING | Imagem não encontrada: imagens\interface_correta_tributos.png
+2026-06-15 17:31:18 | WARNING | Imagem não encontrada: imagens\interface_correta_tributos.png
+2026-06-15 17:31:18 | WARNING | Imagem não encontrada: imagens\interface_correta_tributos.png
+2026-06-15 17:31:19 | WARNING | Imagem não encontrada: imagens\interface_correta_tributos.png
+2026-06-15 17:31:19 | WARNING | Imagem não encontrada: imagens\interface_correta_tributos.png
+2026-06-15 17:31:20 | WARNING | Imagem não encontrada: imagens\interface_correta_tributos.png
+2026-06-15 17:31:20 | WARNING | Imagem não encontrada: imagens\interface_correta_tributos.png
+2026-06-15 17:31:21 | WARNING | Imagem não encontrada: imagens\interface_correta_tributos.png
+2026-06-15 17:31:21 | WARNING | Imagem não encontrada: imagens\interface_correta_tributos.png
+2026-06-15 17:31:22 | WARNING | Imagem não encontrada: imagens\interface_correta_tributos.png
+2026-06-15 17:31:22 | ERROR   | Timeout na nota 194854: 'interface_correta_tributos' não apareceu em 15s
