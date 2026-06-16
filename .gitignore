@@ -1,0 +1,112 @@
+# =============================================================
+# Python
+# =============================================================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.pyd
+
+# Distribuição / empacotamento
+.Python
+build/
+dist/
+*.egg-info/
+*.egg
+MANIFEST
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+
+# Ambientes virtuais
+venv/
+.venv/
+env/
+.env/
+ENV/
+env.bak/
+venv.bak/
+.python-version
+
+# pytest / testes
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+nosetests.xml
+coverage.xml
+*.cover
+
+# mypy / type checkers
+.mypy_cache/
+.dmypy.json
+dmypy.json
+.pyre/
+
+# =============================================================
+# Projeto NBS Agent — dados gerados em runtime
+# =============================================================
+
+# Logs
+data/logs/
+*.log
+
+# Screenshots capturadas em runtime
+data/screenshots/
+
+# Arquivos de entrega gerados
+entrega/*.pdf
+entrega/*.xlsx
+entrega/*.zip
+entrega/*.html
+
+# =============================================================
+# Configuração local / secrets
+# =============================================================
+.env
+.env.local
+.env.*.local
+config/local*.yaml
+config/secrets*.yaml
+config/*.local.yaml
+
+# =============================================================
+# IDEs e editores
+# =============================================================
+
+# VS Code
+.vscode/
+*.code-workspace
+
+# PyCharm / JetBrains
+.idea/
+*.iml
+
+# Vim / Emacs
+*.swp
+*.swo
+*~
+\#*\#
+.\#*
+
+# =============================================================
+# Sistema operacional
+# =============================================================
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+
+# Linux
+*~

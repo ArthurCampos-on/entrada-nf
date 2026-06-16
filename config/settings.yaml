@@ -16,13 +16,13 @@ imagens:
   pasta: "imagens"
   # Confiança mínima para considerar que encontrou o elemento (0.0 a 1.0)
   # Diminua para 0.7 se o sistema tiver dificuldade em encontrar elementos
-  confianca: 0.8
+  confianca: 0.7
 
 automacao:
   # Tempo de espera entre ações (segundos) — aumente se o PC for lento
-  delay_acao: 0.6
+  delay_acao: 0.5
   # Tempo máximo esperando um elemento aparecer na tela (segundos)
-  timeout_elemento: 15
+  timeout_elemento: 12
   # Quantas vezes consecutivas o elemento precisa ser detectado para ser
   # considerado válido — evita falsos positivos por flicker de UI
   tentativas: 3
