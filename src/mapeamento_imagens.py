@@ -84,9 +84,37 @@ IMAGENS_ATIVAS = {
     "placeholder_padrao_fabrica":         "Placeholder Locação Padrão (digitar SL)",
     "aba_financeiro_fabrica":             "Aba Financeiro",
     "botao_confirmar_final_fabrica":      "Botão Confirmar final (fecha lançamento)",
+
+
+
+# ── ENTRADA CT-e ───────────────────────────────────────────────────────
+    # Fluxo: Fiscal → Entrada CT-e → nova entrada → dados → CFOP → tributação → confirmar
+
+    "adm_aba":                "Aba ADM (abre o menu de módulos do NBS)",
+    "nbs_fiscal":             "Ícone NBS Fiscal no menu de módulos",
+    "entrada_cte":            "Opção Entrada CT-e dentro do Fiscal",
+    "incluir_icone":          "Ícone/botão Incluir (nova entrada)",
+    "persona":                "Campo Persona/Fornecedor",
+    "icone_pesquisa":         "Ícone de lupa (pesquisa de fornecedor por CNPJ)",
+    "aceitar_icone":          "Ícone aceitar (confirma seleção do fornecedor)",
+    "numerode_nota":          "Campo Número da Nota (CT-e2: clica para limpar com Backspace)",
+    "modelo_fiscal":          "Campo Modelo Fiscal (abre dropdown de modelos)",
+    "barra_modelo":           "Barra de seleção do modelo fiscal",
+    "codigo_57":              "Opção código 57 (CT-e) na lista de modelos",
+    "barra_natureza":         "Campo/barra de Natureza da Operação",
+    "cfops":                  "Área de CFOPs (clique para abrir seleção de código)",
+    "codigo_natureza":        "Campo Código de Natureza (digitar 1353 ou 2353)",
+    "tributavel_codigo":      "Opção Tributável na lista de tributação",
+    "naotributavel_codigo":   "Opção Não Tributável na lista de tributação",
+    "verde_aceitar":          "Botão verde de aceitar tributação",
+    "adicao":                 "Botão Adição (confirma tributação e avança)",
+    "contabilizacao":         "Aba Contabilização",
+    "raio":                   "Ícone Raio (atalho contabilização automática)",
+    "faturamento":            "Aba Faturamento",
+    "seta_preta":             "Seta preta → (avança para próxima etapa)",
+    "confirmar":              "Botão Confirmar (salva o lançamento CT-e)",
+    "cancelar":               "Botão Cancelar/Fechar (aparece após confirmar — imagem a adicionar)",
 }
-
-
 # ═══════════════════════════════════════════════════════════════════════════
 #  IMAGENS DE NAVEGAÇÃO — para referência, não usadas pelos RPAs atuais
 #  (usuário chega na tela de Compras antes de iniciar o agente)
