@@ -2,19 +2,19 @@
 rpa_transferencia.py — Lança notas de transferência.
 
 Fluxo completo (baseado em TRANSFERÊNCIA.docx):
-  1.  Clicar em Incluir                       → botao_incluir_transferencia
+  1.  Clicar em Incluir                       → botao_incluir
   2.  Clicar em Transferência                 → botao_transferencia
-  3.  Clicar em Interface                     → botao_interface_relatorio
-  4.  Clicar em Interface de Saída            → botao_nota_saida_transferencia
-  5.  Clicar em Pesquisar                     → botao_pesquisa_transferencia
-  6.  Clicar em Aceitar                       → botao_aceitar_transferencia
+  3.  Clicar em Interface                     → btn_interface
+  4.  Clicar em Interface de Saída            → btn_interface_saida
+  5.  Clicar em Pesquisar                     → btn_pesquisar_transf
+  6.  Clicar em Aceitar                       → btn_aceitar
   7.  Apertar Enter
-  8.  Clicar na aba Locação                   → botao_locacao_transferencia
-  9.  Clicar no placeholder de locação        → placeholder_locacao_transferencia
-  10. Escolher PRINCIPAL PEÇA                 → selecao_principal_locacao_transferencia
-  11. Clicar em Locação Padrão e escrever SL  → locacao_padrao_transferencia
+  8.  Clicar na aba Locação                   → aba_locacao
+  9.  Clicar no placeholder de locação        → campo_locacao
+  10. Escolher PRINCIPAL PEÇA                 → principal_pecas
+  11. Clicar em Locação Padrão e escrever SL  → locacao_padrao
   12. Apertar Enter
-  13. Clicar em OK/Confirmar                  → botao_comfirmar_transferencia
+  13. Clicar em OK/Confirmar                  → btn_confirmar
   14. Apertar Seta Esquerda + Enter
   15. Apertar Enter
   16. Apertar Enter
@@ -27,14 +27,22 @@ from src.logger import log
 
 class LancamentoTransferencia:
 
-    def __init__(self, tela: Tela):
+    def __init__(self, tela: Tela) -> None:
         self.tela = tela
         self._locacao_padrao = cfg("locacao.padrao",     "SL")
         self._locacao_tipo   = cfg("locacao.tipo_pecas", "PRINCIPAL(PEÇAS)")
 
-    def lancar_notas(self, notas: list[str]) -> dict:
-        """Lança uma ou mais notas. Retorna {numero: True/False}."""
-        resultados = {}
+    def lancar_notas(self, notas: list[str]) -> dict[str, bool]:
+        """
+        Lança uma ou mais notas de transferência.
+
+        Args:
+            notas: Lista de números de nota a lançar.
+
+        Returns:
+            Dicionário mapeando número da nota → True (sucesso) / False (falha).
+        """
+        resultados: dict[str, bool] = {}
         total = len(notas)
         for i, nota in enumerate(notas, 1):
             nota = nota.strip()
@@ -68,10 +76,10 @@ class LancamentoTransferencia:
 
     # ─────────────────────────────────────────────────────────────────
 
-    def _passos_1_4_abrir_interface(self):
+    def _passos_1_4_abrir_interface(self) -> None:
         """Passos 1-4: Incluir → Transferência → Interface → Interface de Saída."""
         log.debug("Passos 1-4: abrindo interface de transferência...")
-        self.tela.clicar("botao_incluir_transferencia")
+        self.tela.clicar("botao_incluir")
         self.tela.esperar(0.5)
         self.tela.clicar("botao_transferencia")
         self.tela.esperar(0.5)
@@ -80,43 +88,42 @@ class LancamentoTransferencia:
         self.tela.clicar("btn_interface_saida")
         self.tela.esperar(1)
 
-    def _passo_5_pesquisar(self):
+    def _passo_5_pesquisar(self) -> None:
         log.debug("Passo 5: pesquisar...")
         self.tela.clicar("btn_pesquisar_transf")
         self.tela.esperar(1.5)
 
-    def _passo_6_aceitar(self):
+    def _passo_6_aceitar(self) -> None:
         log.debug("Passo 6: Aceitar...")
         self.tela.clicar("btn_aceitar")
 
-    def _passo_7_enter(self):
+    def _passo_7_enter(self) -> None:
         """Passo 7: Enter após Aceitar."""
         log.debug("Passo 7: Enter...")
         self.tela.tecla("enter")
 
-    def _passos_8_12_locacoes(self):
-        """
-        Passos 8-12: aba Locação → placeholder → PRINCIPAL(PEÇAS) → SL → Enter.
-        """
+    def _passos_8_12_locacoes(self) -> None:
+        """Passos 8-12: aba Locação → placeholder → PRINCIPAL(PEÇAS) → SL → Enter."""
         log.debug(f"Passos 8-12: locações (tipo={self._locacao_tipo}, cód={self._locacao_padrao})...")
-        self.tela.clicar("botao_locacao_transferencia")
+        self.tela.clicar("aba_locacao")
         self.tela.esperar(0.8)
-        self.tela.clicar("placeholder_locacao_transferencia")
+        self.tela.clicar("campo_locacao")
         self.tela.esperar(0.5)
-        self.tela.clicar("selecao_principal_locacao_transferencia")
+        self.tela.clicar("principal_pecas")
         self.tela.esperar(0.5)
-        self.tela.clicar("locacao_padrao_transferencia")
+        self.tela.clicar("locacao_padrao")
         self.tela.digitar(self._locacao_padrao)   # "SL"
         self.tela.tecla("enter")
         self.tela.esperar(0.5)
 
-    def _passo_13_confirmar(self):
+    def _passo_13_confirmar(self) -> None:
         log.debug("Passo 13: Confirmar...")
-        self.tela.clicar("botao_comfirmar_transferencia")
+        self.tela.clicar("btn_confirmar")
 
-    def _passos_14_16_teclado_final(self):
+    def _passos_14_16_teclado_final(self) -> None:
         """
         Passos 14-16: Seta Esquerda + Enter → Enter → Enter.
+
         Fecha as janelas de confirmação restantes via teclado.
         """
         log.debug("Passos 14-16: teclado final (← Enter, Enter, Enter)...")

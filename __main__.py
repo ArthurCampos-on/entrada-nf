@@ -4,9 +4,11 @@ __main__.py
 Ponto de entrada do NBS Agent.
 
 Uso:
-  python __main__.py            → abre o sistema completo com menu
-  python __main__.py relatorio  → gera relatório direto e fecha
-  python __main__.py fabrica    → lança nota(s) direto e fecha
+  python __main__.py                → abre o sistema completo com menu
+  python __main__.py relatorio      → gera relatório direto e fecha
+  python __main__.py fabrica        → lança nota(s) direto e fecha
+  python __main__.py transferencia  → lança transferência direto e fecha
+  python __main__.py entrada-cte    → lança CT-e direto e fecha
 """
 
 import sys
@@ -24,13 +26,15 @@ if sys.platform == "win32":
 from src.agente import NBSAgent
 from src.menu   import rodar_menu
 
+_COMANDOS = ("relatorio", "fabrica", "transferencia", "entrada-cte")
 
-def main():
+
+def main() -> None:
     agente = NBSAgent()
 
     # ── Comando direto via argumento ──────────────────────────────────
     if len(sys.argv) > 1:
-        cmd = sys.argv[1].lower()
+        cmd: str = sys.argv[1].lower()
 
         agente.iniciar()
 
@@ -46,9 +50,13 @@ def main():
             agente.lancar_transferencia()
             input("\nPressione Enter para fechar...")
 
+        elif cmd == "entrada-cte":
+            agente.lancar_entrada_cte()
+            input("\nPressione Enter para fechar...")
+
         else:
             print(f"Comando desconhecido: '{cmd}'")
-            print("Disponíveis: relatorio | fabrica | transferencia")
+            print(f"Disponíveis: {' | '.join(_COMANDOS)}")
 
         agente.encerrar()
         return
