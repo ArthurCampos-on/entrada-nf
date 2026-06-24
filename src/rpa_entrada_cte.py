@@ -22,7 +22,10 @@ contabilizacao · raio · faturamento · seta_preta · confirmar
 
 from __future__ import annotations
 
+from dataclasses import dataclass
+
 from src.tela   import Tela
+from src.config import cfg
 from src.logger import log
 
 
@@ -30,46 +33,26 @@ from src.logger import log
 #  Tipos auxiliares
 # ═══════════════════════════════════════════════════════════════════════════
 
+@dataclass
 class DadosNota:
     """Dados de uma única nota CT-e coletados do usuário."""
-
-    def __init__(
-        self,
-        numero:          str,
-        serie:           str,
-        emissao:         str,
-        modificar_entrada: bool,
-        numero_entrada:  str | None,
-        valor_total:     str,
-        nf_valor:        str,
-        chave_cte:       str,
-        numero_natureza: str,
-        cidade_saida:    str,
-        uf_saida:        str,
-        cidade_chegada:  str,
-        uf_chegada:      str,
-        tem_icms:        bool,
-        porcentagem_icms: str | None,
-        tem_outros:      bool,
-        valor_outros:    str | None,
-    ) -> None:
-        self.numero           = numero
-        self.serie            = serie
-        self.emissao          = emissao
-        self.modificar_entrada = modificar_entrada
-        self.numero_entrada   = numero_entrada
-        self.valor_total      = valor_total
-        self.nf_valor         = nf_valor
-        self.chave_cte        = chave_cte
-        self.numero_natureza  = numero_natureza
-        self.cidade_saida     = cidade_saida
-        self.uf_saida         = uf_saida
-        self.cidade_chegada   = cidade_chegada
-        self.uf_chegada       = uf_chegada
-        self.tem_icms         = tem_icms
-        self.porcentagem_icms = porcentagem_icms
-        self.tem_outros       = tem_outros
-        self.valor_outros     = valor_outros
+    numero:            str
+    serie:             str
+    emissao:           str
+    modificar_entrada: bool
+    numero_entrada:    str | None
+    valor_total:       str
+    nf_valor:          str
+    chave_cte:         str
+    numero_natureza:   str
+    cidade_saida:      str
+    uf_saida:          str
+    cidade_chegada:    str
+    uf_chegada:        str
+    tem_icms:          bool
+    porcentagem_icms:  str | None
+    tem_outros:        bool
+    valor_outros:      str | None
 
 
 # ═══════════════════════════════════════════════════════════════════════════
@@ -81,6 +64,10 @@ class EntradaCTE:
 
     def __init__(self, tela: Tela) -> None:
         self.tela = tela
+        self._fat_entrada   = str(cfg("entrada_cte.faturamento_entrada_dias",   28))
+        self._fat_intervalo = str(cfg("entrada_cte.faturamento_intervalo_dias", 28))
+        self._fat_parcelas  = str(cfg("entrada_cte.faturamento_parcelas",        1))
+        self._cod_contab    = str(cfg("entrada_cte.codigo_contabilizacao",     "40"))
 
     # ------------------------------------------------------------------ #
     #  Ponto de entrada público                                           #
@@ -90,7 +77,32 @@ class EntradaCTE:
         """
         Lança `quantidade` notas CT-e do mesmo fornecedor.
 
-        Retorna dict mapeando número da nota (1-indexed) → True/False.
+        O método coleta os dados interativamente no terminal **antes** de iniciar
+        a automação de cada nota, para que o usuário não precise monitorar o
+        terminal durante o preenchimento no NBS.
+
+        Fluxo:
+            1. Pede CNPJ do fornecedor (compartilhado por todas as notas).
+            2. Para cada nota: coleta dados → executa automação.
+               - Nota 1: fluxo completo (navegação + CNPJ + preenchimento).
+               - Nota 2+: fluxo reduzido (reutiliza tela já aberta).
+            3. Em caso de erro em nota intermediária, pausa e pergunta se
+               deve continuar com a próxima.
+
+        Args:
+            quantidade: Número de notas CT-e a lançar (mesmo fornecedor).
+
+        Returns:
+            Dicionário ``{"1": True, "2": False, ...}`` mapeando a posição
+            (1-indexed) de cada nota para True (sucesso) ou False (falha).
+
+        Raises:
+            Não lança exceções — erros são capturados internamente e registrados
+            em log e screenshot.
+
+        Exemplo:
+            resultados = EntradaCTE(tela).lancar(3)
+            # {"1": True, "2": True, "3": False}
         """
         resultados: dict[str, bool] = {}
 
@@ -325,7 +337,8 @@ class EntradaCTE:
     def _contabilizacao_primeira_nota(self) -> None:
         """
         Preenche a aba Contabilização.
-        Na primeira nota inclui passos extras (2× Tab + código 40 + Enter).
+        Na primeira nota inclui passos extras (2× Tab + código contabilização + Enter).
+        Código lido de entrada_cte.codigo_contabilizacao no settings.yaml.
         """
         log.info("Preenchendo Contabilização (primeira nota)")
 
@@ -333,7 +346,7 @@ class EntradaCTE:
 
         self.tela.tecla("tab")
         self.tela.tecla("tab")
-        self.tela.digitar("40")
+        self.tela.digitar(self._cod_contab)
         self.tela.tecla("enter")
 
         self.tela.clicar("raio")
@@ -354,18 +367,19 @@ class EntradaCTE:
         """
         Preenche Faturamento, pausa para revisão manual e confirma o lançamento.
         Compartilhado entre primeira nota e notas adicionais.
+        Valores lidos de entrada_cte.faturamento_* no settings.yaml.
         """
         log.info("Preenchendo Faturamento e confirmando lançamento")
 
-        # 4 tabs + campos fixos de faturamento
+        # 4 tabs + campos de faturamento vindos do settings.yaml
         for _ in range(4):
             self.tela.tecla("tab")
 
-        self.tela.digitar("28")
+        self.tela.digitar(self._fat_entrada)
         self.tela.tecla("tab")
-        self.tela.digitar("28")
+        self.tela.digitar(self._fat_intervalo)
         self.tela.tecla("tab")
-        self.tela.digitar("1")
+        self.tela.digitar(self._fat_parcelas)
 
         # Pausa para o usuário revisar os dados na tela antes de confirmar
         self.tela.pausar_para_usuario(
@@ -389,11 +403,18 @@ class EntradaCTE:
 
     @staticmethod
     def _pedir_cnpj() -> str:
-        """Pede o CNPJ do fornecedor (único para todas as notas do lote)."""
+        """Pede e valida o CNPJ do fornecedor (único para todas as notas do lote)."""
         print("\n" + "═" * 52)
         print("  📋 ENTRADA CT-e — Dados do Fornecedor")
         print("═" * 52)
-        return input("  CNPJ do fornecedor: ").strip()
+        cnpj = ""
+        while len(cnpj.replace(".", "").replace("/", "").replace("-", "")) != 14:
+            cnpj = input("  CNPJ do fornecedor (14 dígitos): ").strip()
+            apenas_digitos = cnpj.replace(".", "").replace("/", "").replace("-", "")
+            if len(apenas_digitos) != 14 or not apenas_digitos.isdigit():
+                print("  ⚠ CNPJ inválido. Digite 14 dígitos (com ou sem máscara).")
+                cnpj = ""
+        return cnpj
 
     @staticmethod
     def _pedir_dados_nota(numero_nota: int, total: int) -> DadosNota:
@@ -418,7 +439,11 @@ class EntradaCTE:
 
         valor_total = input("  Valor total da nota: ").strip()
         nf_valor    = input("  Valor NF: ").strip()
-        chave_cte   = input("  Chave CT-e (44 dígitos): ").strip()
+        chave_cte = ""
+        while len(chave_cte) != 44 or not chave_cte.isdigit():
+            chave_cte = input("  Chave CT-e (44 dígitos): ").strip()
+            if len(chave_cte) != 44 or not chave_cte.isdigit():
+                print(f"  ⚠ Chave inválida ({len(chave_cte)} dígitos). Digite exatamente 44 números.")
 
         numero_natureza = ""
         while numero_natureza not in ("2", "3"):

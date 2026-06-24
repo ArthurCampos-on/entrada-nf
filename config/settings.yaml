@@ -58,3 +58,13 @@ locacao:
 logging:
   nivel: "INFO"
   arquivo: "data/logs/nbs_agent.log"
+
+entrada_cte:
+  # Dias de entrada do boleto (campo Faturamento)
+  faturamento_entrada_dias: 28
+  # Intervalo entre parcelas (dias)
+  faturamento_intervalo_dias: 28
+  # Número de parcelas
+  faturamento_parcelas: 1
+  # Código de contabilização (aba Contabilização — primeira nota)
+  codigo_contabilizacao: "40"

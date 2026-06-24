@@ -2,9 +2,11 @@
 
 Automação do sistema NBS para a empresa **Duna - Tubarão**.
 
-Abre o Chrome com **aba NBS + aba WhatsApp Web**, faz login automático
-e exibe um menu no terminal controlado pelas setas do teclado.
+Exibe um **menu no terminal** controlado pelas setas do teclado.
 Às **8h todo dia** o relatório diário roda sozinho sem nenhuma ação sua.
+
+> ✅ O usuário já deve estar **logado no NBS** (Cloud Service + NBS Shortcut)
+> antes de iniciar o agente. O login não é automatizado.
 
 ---
 
@@ -15,11 +17,11 @@ Por isso o sistema usa duas tecnologias em conjunto:
 
 | Etapa | Tecnologia | Por quê |
 |---|---|---|
-| Login Cloud Service e WhatsApp | Selenium | Essa tela tem HTML normal |
-| Tudo dentro do NBS | PyAutoGUI + OpenCV | O NBS é um canvas — só pixels |
+| Localizar botões e campos | OpenCV (template matching) | O NBS é um canvas — só pixels |
+| Clicar e digitar | PyAutoGUI | Simula mouse e teclado |
 
-O OpenCV localiza cada botão pelo visual (recortes de imagem que você salva
-uma vez), então funciona em qualquer resolução.
+O OpenCV compara pequenas **imagens de referência** (recortes salvos em `imagens/`)
+com o que está na tela, então funciona em qualquer resolução.
 
 ---
 
@@ -30,26 +32,26 @@ nbs-agent/
 ├── __main__.py              ← entrada: python __main__.py
 ├── requirements.txt
 ├── config/
-│   └── settings.yaml        ← credenciais e configurações
-├── imagens/                 ← recortes dos botões (63 já incluídos)
+│   └── settings.yaml        ← configurações
+├── imagens/                 ← recortes dos botões
 ├── data/
 │   ├── logs/                ← log de execução
 │   └── screenshots/         ← capturas salvas em erros
 ├── src/
 │   ├── agente.py            ← orquestrador principal
-│   ├── menu.py              ← menu interativo com setas ↑ ↓
-│   ├── browser.py           ← Chrome, login web, WhatsApp
-│   ├── tela.py              ← PyAutoGUI, template matching
-│   ├── rpa_login.py         ← login NBS Shortcut (canvas)
+│   ├── menu.py              ← menu interativo (↑ ↓, cross-platform)
+│   ├── tela.py              ← PyAutoGUI + OpenCV (mouse, teclado, template matching)
+│   ├── constantes.py        ← nomes canônicos de imagens e constantes globais
+│   ├── mapeamento_imagens.py← fonte de verdade de todos os arquivos de imagem
+│   ├── config.py            ← lê e valida settings.yaml
+│   ├── logger.py            ← logs coloridos com rotação automática
+│   ├── agendador.py         ← disparo automático do relatório
 │   ├── rpa_relatorio.py     ← 14 passos do relatório diário
-│   ├── rpa_fabrica.py       ← 24 passos do lançamento de fábrica
+│   ├── rpa_fabrica.py       ← 25 passos do lançamento de fábrica
 │   ├── rpa_transferencia.py ← 16 passos do lançamento de transferência
-│   ├── agendador.py         ← disparo automático às 8h
-│   ├── mapeamento_imagens.py← mapeia botões para arquivos de imagem
-│   ├── config.py            ← lê settings.yaml
-│   └── logger.py            ← logs com rotação automática
+│   └── rpa_entrada_cte.py   ← fluxo CT-e (CTE1 + CTE2)
 └── scripts/
-    └── setup.py             ← instala dependências
+    └── setup.py             ← instala dependências e exibe checklist
 ```
 
 ---
@@ -62,35 +64,40 @@ nbs-agent/
 python scripts/setup.py
 ```
 
-Instala: `selenium`, `pyautogui`, `opencv-python`, `Pillow`, `pyyaml`,
-`loguru`, `webdriver-manager`.
+Instala: `pyautogui`, `opencv-python`, `Pillow`, `pyyaml`, `loguru`, `pyperclip`.
 
-### 2. Configurar credenciais
+### 2. Configurar settings.yaml
 
-Edite `config/settings.yaml`:
+Edite `config/settings.yaml` com os valores do seu ambiente:
 
 ```yaml
-nbs:
-  url: "http://10.32.1.139:85/"
-  cloud_usuario: "SEU_USUARIO"   # login Cloud Service
-  cloud_senha:   "SUA_SENHA"
-  nbs_usuario:   "SEU_USUARIO"          # login NBS Shortcut
-  nbs_senha:     "SEU-USUARIO"
+agendador:
+  horario_diario: "08:00"
+
+empresa:
+  nome_filtro:   "Duna"
+  nome_completo: "Duna Tubarão"
+
+imagens:
+  pasta:     "imagens"
+  confianca: 0.85
+
+automacao:
+  delay_acao:        0.6
+  timeout_elemento:  15
+  tentativas:        3
 ```
 
 ### 3. Verificar as imagens
 
-O projeto já vem com **63 imagens** extraídas e mapeadas automaticamente.
-Para confirmar que cada imagem está correta visualmente, rode:
+Confirme que as imagens de referência estão presentes:
 
 ```bash
-python src/mapeamento_imagens.py --visualizar
+python src/mapeamento_imagens.py
 ```
 
-Isso abre cada imagem uma por uma para você confirmar.
-
-Se alguma imagem estiver errada, recorte a correta com **Win+Shift+S**
-e salve na pasta `imagens/` com o mesmo nome.
+Se alguma faltar, recorte com **Win+Shift+S** e salve em `imagens/`
+com o nome exato listado em [IMAGENS.md](IMAGENS.md).
 
 ---
 
@@ -100,7 +107,8 @@ e salve na pasta `imagens/` com o mesmo nome.
 python __main__.py
 ```
 
-O Navegador ja deve estar aberto e com a **pagina do nbs aberto**, deixe sempre o nbs no monitor principal. Após o comando ` python __main__.py` sera mostrado o menu no terminal.
+O NBS já deve estar **aberto e visível no monitor principal**. Após o comando
+será exibido o menu no terminal:
 
 ```
 ╔══════════════════════════════════╗
@@ -109,15 +117,15 @@ O Navegador ja deve estar aberto e com a **pagina do nbs aberto**, deixe sempre 
 ║  →  Relatório diário             ║
 ║     Fábrica                      ║
 ║     Transferência                ║
-║     Status                       ║                        
+║     Entrada CT-e                 ║
+║     Status                       ║
 ║     Sair                         ║
 ╠══════════════════════════════════╣
 ║  ↑ ↓ navegar   Enter confirmar   ║
 ╚══════════════════════════════════╝
 ```
 
-O menu usa **setas do teclado** — sem digitar comandos, sem janela extra,
-zero consumo adicional de memória.
+O menu usa **setas do teclado** — sem digitar comandos, sem janela extra.
 
 ---
 
@@ -128,10 +136,9 @@ zero consumo adicional de memória.
 | Relatório diário | Gera o relatório de compras do dia anterior e imprime |
 | Fábrica | Pergunta o(s) número(s) de nota e executa lançamento |
 | Transferência | Pergunta o(s) número(s) de nota e executa lançamento |
+| Entrada CT-e | Pergunta quantidade de notas e executa lançamento CT-e |
 | Status | Mostra quando vai rodar o próximo relatório automático |
-| WhatsApp | Coloca o foco na aba do WhatsApp Web |
-| NBS | Coloca o foco na aba do NBS |
-| Sair | Fecha tudo e encerra |
+| Sair | Encerra o agente |
 
 ### Lançamento de notas (Fábrica e Transferência)
 
@@ -144,10 +151,22 @@ Ao selecionar Fábrica ou Transferência, o sistema pergunta:
 - **Uma nota:** `123456`
 - **Várias notas:** `123456, 789012, 345678`
 
-O sistema detecta automaticamente quantas são pela vírgula e lança
-uma por uma. Em alguns pontos haverá **pausas manuais** — o terminal
-mostra uma mensagem e aguarda você digitar `y` para continuar ou `n`
-para cancelar aquela nota.
+O sistema lança uma por uma. Em alguns pontos haverá **pausas manuais** —
+o terminal exibe uma mensagem e aguarda `y` para continuar ou `n` para
+cancelar aquela nota.
+
+---
+
+## Modo de comando direto
+
+Para rodar uma ação sem abrir o menu:
+
+```bash
+python __main__.py relatorio
+python __main__.py fabrica
+python __main__.py transferencia
+python __main__.py entrada-cte
+```
 
 ---
 
@@ -165,73 +184,35 @@ agendador:
 
 ---
 
-## Modo de comando direto
-
-Se quiser rodar uma ação sem abrir o menu:
-
-```bash
-python __main__.py relatorio
-python __main__.py fabrica
-python __main__.py transferencia
-```
-
----
-
 ## Ajustes para PC lento
 
-Se a automação estiver clicando rápido demais, aumente em
-`config/settings.yaml`:
+Se a automação estiver clicando rápido demais, aumente em `config/settings.yaml`:
 
 ```yaml
 automacao:
-  delay_acao: 0.8        # pausa entre ações em segundos (padrão 0.6)
-  timeout_elemento: 20   # tempo máximo esperando um elemento (padrão 15)
+  delay_acao:       0.8   # pausa entre ações em segundos (padrão 0.6)
+  timeout_elemento: 20    # tempo máximo esperando um elemento (padrão 15)
 
 imagens:
-  confianca: 0.75        # diminua se não encontrar botões (padrão 0.8)
+  confianca: 0.75         # diminua se não encontrar botões (padrão 0.85)
 ```
-
----
-
-## Fluxos automatizados
-
-### Login (7 passos)
-1. Abre `http://10.32.1.139:85/` no Chrome
-2. Preenche usuário e senha no Cloud Service
-3. Clica em Log on
-4. Aguarda 8 segundos o sistema carregar
-5. Preenche usuário no NBS Shortcut
-6. Preenche senha
-7. Clica em Confirmar
-
-### Relatório diário (14 passos)
-Seleciona empresa Duna Tubarão → preenche datas do dia anterior →
-pesquisa → aba Nota → Imprimir Lista → Sim → Print → ícone impressora
-→ Print no viewer → Ctrl+P → Enter.
-
-### Fábrica (24 passos)
-Incluir → Compra → Interface → digita nota → pesquisa →
-⏸ pausa manual → aba CFOP → botão direito → Definir CFOP →
-Tributados → OK → Aceitar → Cruzamento de Pedidos → seta direita →
-Confirmar → OK → Recálculo → Locações → PRINCIPAL(PEÇAS) → SL →
-Financeiro (60/60/1/Boleto) → Confirmar.
-
-### Transferência (16 passos)
-Incluir → Transferência → Interface → Interface de Saída →
-Pesquisar → Aceitar → Confirmar → OK → Locações →
-PRINCIPAL(PEÇAS) → SL → Sugestão → OK → Não → OK.
 
 ---
 
 ## Diagnóstico de erros
 
-Quando algo falha o sistema salva um screenshot automaticamente em
-`data/screenshots/` com o nome do erro. Os logs completos ficam em
-`data/logs/nbs_agent.log`.
+Quando algo falha, o sistema salva um screenshot em `data/screenshots/`
+e registra o erro em `data/logs/nbs_agent.log`.
+
+Consulte [TROUBLESHOOTING.md](TROUBLESHOOTING.md) para os problemas mais comuns.
 
 ---
 
-## O que ainda falta implementar
+## Documentação
 
-- **Entrada CTE** — fluxo ainda não documentado
-- **Relatório de Rede** — fluxo ainda não documentado
+| Documento | Conteúdo |
+|---|---|
+| [COMO_USAR.md](COMO_USAR.md) | Guia passo a passo para o usuário final |
+| [IMAGENS.md](IMAGENS.md) | Tabela completa de imagens e como recapturá-las |
+| [ARCHITECTURE.md](ARCHITECTURE.md) | Visão técnica: fluxo, módulos e classe Tela |
+| [TROUBLESHOOTING.md](TROUBLESHOOTING.md) | Problemas comuns e soluções |

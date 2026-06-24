@@ -31,12 +31,24 @@ _CAMPOS_OBRIGATORIOS = [
     "locacao.tipo_pecas",
     "logging.nivel",
     "logging.arquivo",
+    "entrada_cte.faturamento_entrada_dias",
+    "entrada_cte.faturamento_intervalo_dias",
+    "entrada_cte.faturamento_parcelas",
+    "entrada_cte.codigo_contabilizacao",
 ]
 
 
-def cfg(caminho: str, padrao=None):
+def cfg(caminho: str, padrao: object = None) -> object:
     """
     Lê um valor do settings.yaml usando notação de pontos.
+
+    Args:
+        caminho: Caminho no formato "secao.chave" (ex: "imagens.confianca").
+        padrao:  Valor retornado se a chave não existir.
+
+    Returns:
+        O valor encontrado no YAML ou *padrao* se ausente.
+
     Exemplos:
         cfg("imagens.confianca")       → 0.8
         cfg("financeiro.entrada_dias") → 60
@@ -53,7 +65,7 @@ def cfg(caminho: str, padrao=None):
     return val
 
 
-def _carregar():
+def _carregar() -> None:
     """Carrega o YAML e valida os campos obrigatórios. [8]"""
     global _dados
     for p in [Path(__file__).parent, Path(__file__).parent.parent]:
@@ -65,9 +77,9 @@ def _carregar():
     raise FileNotFoundError("config/settings.yaml não encontrado.")
 
 
-def _validar():
+def _validar() -> None:
     """[8] Verifica campos obrigatórios e lança erro claro se algum faltar."""
-    faltando = []
+    faltando: list[str] = []
     for campo in _CAMPOS_OBRIGATORIOS:
         val = _dados
         for k in campo.split("."):

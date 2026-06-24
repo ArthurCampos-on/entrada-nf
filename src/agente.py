@@ -34,7 +34,15 @@ class NBSAgent:
     # ------------------------------------------------------------------ #
 
     def iniciar(self) -> bool:
-        """Inicializa o agente. O usuário já deve estar logado no NBS."""
+        """
+        Inicializa o agente.
+
+        Configura o logger e exibe mensagem de início.
+        O usuário deve estar logado no NBS antes de chamar este método.
+
+        Returns:
+            True sempre (mantido para compatibilidade futura com checagens).
+        """
         log.info("=" * 50)
         log.info("  NBS Agent iniciando...")
         log.info("=" * 50)
@@ -42,12 +50,12 @@ class NBSAgent:
         return True
 
     def iniciar_agendador(self) -> None:
-        """Inicia o agendador do relatório diário automático."""
+        """Inicia o agendador do relatório diário em thread daemon."""
         self._agendador = Agendador(callback_relatorio=self.relatorio_diario)
         self._agendador.iniciar()
 
     def encerrar(self) -> None:
-        """Para o agendador."""
+        """Para o agendador e registra encerramento no log."""
         if self._agendador:
             self._agendador.parar()
         log.info("NBS Agent encerrado.")
@@ -57,7 +65,14 @@ class NBSAgent:
     # ------------------------------------------------------------------ #
 
     def relatorio_diario(self) -> bool:
-        """Gera o relatório de compras do dia anterior."""
+        """
+        Gera o relatório de compras do dia anterior.
+
+        Chamado automaticamente pelo agendador ou manualmente via menu.
+
+        Returns:
+            True se o relatório foi gerado com sucesso, False caso contrário.
+        """
         log.info("Iniciando relatório diário...")
         ok = RelatorioCompras(self.tela).gerar_dia_anterior()
         if ok:
@@ -67,7 +82,12 @@ class NBSAgent:
         return ok
 
     def lancar_fabrica(self) -> None:
-        """Pergunta as notas e executa lançamento de fábrica."""
+        """
+        Solicita números de nota ao usuário e executa lançamento de fábrica.
+
+        Aceita uma ou mais notas separadas por vírgula.
+        Cada nota passa pelos 25 passos do fluxo de fábrica.
+        """
         notas = pedir_notas("fábrica")
         if not notas:
             return
@@ -75,7 +95,12 @@ class NBSAgent:
         self._exibir_resultados(resultados)
 
     def lancar_transferencia(self) -> None:
-        """Pergunta as notas e executa lançamento de transferência."""
+        """
+        Solicita números de nota ao usuário e executa lançamento de transferência.
+
+        Aceita uma ou mais notas separadas por vírgula.
+        Cada nota passa pelos 16 passos do fluxo de transferência.
+        """
         notas = pedir_notas("transferência")
         if not notas:
             return
@@ -83,7 +108,12 @@ class NBSAgent:
         self._exibir_resultados(resultados)
 
     def lancar_entrada_cte(self) -> None:
-        """Pergunta a quantidade de notas e executa lançamento de CT-e."""
+        """
+        Solicita quantidade de notas CT-e e executa o lançamento.
+
+        Todas as notas do lote devem pertencer ao mesmo fornecedor.
+        A primeira nota executa o fluxo completo; as demais reutilizam a tela.
+        """
         try:
             qtd_str = input("\n  Quantas notas CT-e do mesmo fornecedor? ").strip()
             qtd = int(qtd_str)
@@ -100,6 +130,7 @@ class NBSAgent:
     # ------------------------------------------------------------------ #
 
     def _exibir_resultados(self, resultados: dict[str, bool]) -> None:
+        """Imprime no terminal o resultado de cada nota processada."""
         print("\n  Resultado:")
         for nota, ok in resultados.items():
             icone = "✓" if ok else "✗"

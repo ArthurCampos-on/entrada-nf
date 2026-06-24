@@ -16,3 +16,7 @@ rpa_fabrica        Lançamento de notas de fábrica (25 passos)
 rpa_transferencia  Lançamento de notas de transferência (16 passos)
 rpa_entrada_cte    Entrada de notas CT-e (fluxo CTE1 + CTE2)
 """
+
+from src.constantes import VERSAO as __version__
+
+__all__ = ["__version__"]

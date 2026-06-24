@@ -4,8 +4,18 @@ Localiza elementos pelo visual (template matching) em vez de coordenadas fixas.
 
 Melhorias aplicadas:
   [1] digitar() usa pyperclip (clipboard) — suporta caracteres portugueses (ã, ç, é…)
-  [2] encontrar() usa grayscale — até 3× mais rápido
+  [2] encontrar() usa grayscale — até 3× mais rápido que colorido
   [3] aguardar() exige N confirmações consecutivas — evita falsos positivos por flicker
+  [4] _resolver_caminho() testa .png, .jpeg e .jpg — imagens JPEG são encontradas
+
+Uso básico:
+    from src.tela import Tela
+
+    tela = Tela()
+    tela.clicar("botao_incluir")      # aguarda aparecer e clica
+    tela.digitar("123456")            # cola via clipboard (suporta acentos)
+    tela.tecla("enter")
+    tela.aguardar("confirmacao")      # bloqueia até aparecer ou TimeoutError
 """
 
 import time
@@ -26,7 +36,8 @@ pyautogui.PAUSE = 0.15
 
 class Tela:
 
-    def __init__(self):
+    def __init__(self) -> None:
+        """Inicializa Tela lendo configurações do settings.yaml."""
         self._imgs       = Path(cfg("imagens.pasta", "imagens"))
         self._conf       = cfg("imagens.confianca", 0.8)
         self._delay      = cfg("automacao.delay_acao", 0.6)
@@ -37,14 +48,27 @@ class Tela:
 
     # ── Localização ───────────────────────────────────────────────────
 
+    def _resolver_caminho(self, nome: str) -> Path | None:
+        """
+        Retorna o Path do arquivo de imagem para *nome*, testando
+        as extensões .png, .jpeg e .jpg nessa ordem.
+        Retorna None se nenhuma variante existir.
+        """
+        for ext in (".png", ".jpeg", ".jpg"):
+            p = self._imgs / f"{nome}{ext}"
+            if p.exists():
+                return p
+        return None
+
     def encontrar(self, nome: str) -> tuple[int, int] | None:
         """
         Procura imagem na tela. Retorna (x, y) do centro ou None.
         [2] Grayscale: 1 canal em vez de 3 — até 3× mais rápido.
+        Suporta .png, .jpeg e .jpg.
         """
-        caminho = self._imgs / f"{nome}.png"
-        if not caminho.exists():
-            log.warning(f"Imagem não encontrada: {caminho}")
+        caminho = self._resolver_caminho(nome)
+        if caminho is None:
+            log.warning(f"Imagem não encontrada: imagens/{nome}.[png|jpeg|jpg]")
             return None
 
         tela = cv2.cvtColor(np.array(ImageGrab.grab()), cv2.COLOR_RGB2GRAY)
@@ -89,17 +113,19 @@ class Tela:
         raise TimeoutError(f"'{nome}' não apareceu em {timeout or self._timeout}s")
 
     def existe(self, nome: str) -> bool:
+        """Retorna True se a imagem *nome* for encontrada na tela agora."""
         return self.encontrar(nome) is not None
 
     # ── Mouse ─────────────────────────────────────────────────────────
 
-    def clicar(self, nome: str, timeout: int | None = None):
+    def clicar(self, nome: str, timeout: int | None = None) -> None:
+        """Aguarda *nome* aparecer na tela e clica no centro do elemento."""
         x, y = self.aguardar(nome, timeout)
         time.sleep(self._delay)
         pyautogui.click(x, y)
         time.sleep(self._delay)
 
-    def clique_direito_centro_tela(self):
+    def clique_direito_centro_tela(self) -> None:
         """Clica com botão direito no centro geométrico da tela."""
         w, h = pyautogui.size()
         time.sleep(self._delay)
@@ -108,9 +134,9 @@ class Tela:
 
     # ── Teclado ───────────────────────────────────────────────────────
 
-    def digitar(self, texto: str):
+    def digitar(self, texto: str) -> None:
         """
-        [1] Usa clipboard (pyperclip + Ctrl+V).
+        [1] Cola via clipboard (pyperclip + Ctrl+V).
         Suporta qualquer caractere — ã, ç, é, ô, etc.
         """
         time.sleep(self._delay)
@@ -118,12 +144,14 @@ class Tela:
         pyautogui.hotkey("ctrl", "v")
         time.sleep(self._delay)
 
-    def tecla(self, *teclas: str):
+    def tecla(self, *teclas: str) -> None:
+        """Pressiona uma tecla simples ou combinação (ex: 'enter', 'ctrl', 'a')."""
         time.sleep(0.2)
         pyautogui.hotkey(*teclas) if len(teclas) > 1 else pyautogui.press(teclas[0])
         time.sleep(0.3)
 
-    def limpar_e_digitar(self, texto: str):
+    def limpar_e_digitar(self, texto: str) -> None:
+        """Seleciona tudo no campo ativo (Ctrl+A) e digita *texto*."""
         pyautogui.hotkey("ctrl", "a")
         time.sleep(0.2)
         self.digitar(texto)
@@ -173,10 +201,13 @@ class Tela:
 
     # ── Utilitários ───────────────────────────────────────────────────
 
-    def esperar(self, segundos: float):
+    def esperar(self, segundos: float) -> None:
+        """Pausa a automação por *segundos* segundos."""
         time.sleep(segundos)
 
     def screenshot(self, nome: str = "tela") -> Path:
+        """Salva screenshot da tela em data/screenshots/ e loga o caminho."""
         path = self._shots / f"{nome}_{int(time.time())}.png"
         ImageGrab.grab().save(str(path))
+        log.debug(f"Screenshot salvo: {path}")
         return path
