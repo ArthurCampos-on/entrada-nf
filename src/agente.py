@@ -17,6 +17,9 @@ from src.agendador         import Agendador
 from src.menu              import pedir_notas
 from src.config            import cfg
 from src.logger            import log, configurar
+from src.rastreador        import Rastreador
+from src.dashboard         import DashboardServer
+from src.controlador       import ControladorRPA
 
 
 class NBSAgent:
@@ -28,6 +31,9 @@ class NBSAgent:
         )
         self.tela       = Tela()
         self._agendador: Agendador | None = None
+        self.rastreador  = Rastreador()
+        self.controlador = ControladorRPA(self)
+        self.dashboard   = DashboardServer(self.rastreador, self.controlador)
 
     # ------------------------------------------------------------------ #
     #  INICIALIZAÇÃO                                                      #
@@ -46,6 +52,8 @@ class NBSAgent:
         log.info("=" * 50)
         log.info("  NBS Agent iniciando...")
         log.info("=" * 50)
+        self.dashboard.iniciar()
+        log.info("✓ Dashboard disponível em http://127.0.0.1:8080")
         log.info("✓ Sistema pronto para automações.")
         return True
 

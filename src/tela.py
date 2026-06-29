@@ -31,7 +31,7 @@ from src.config import cfg
 from src.logger import log
 
 pyautogui.FAILSAFE = True
-pyautogui.PAUSE = 0.15
+pyautogui.PAUSE = 0.05   # era 0.15 — reduzido para ganhar velocidade
 
 
 class Tela:
@@ -138,14 +138,33 @@ class Tela:
         """
         [1] Cola via clipboard (pyperclip + Ctrl+V).
         Suporta qualquer caractere — ã, ç, é, ô, etc.
+
+        pyperclip.copy() é chamado ANTES do delay para garantir que o
+        clipboard esteja atualizado quando o Ctrl+V for disparado.
+        Isso evita o bug de colar o valor anterior (ex: "SL" no financeiro).
         """
-        time.sleep(self._delay)
         pyperclip.copy(str(texto))
+        time.sleep(self._delay)
         pyautogui.hotkey("ctrl", "v")
         time.sleep(self._delay)
 
+    def digitar_teclado(self, texto: str, intervalo: float = 0.08) -> None:
+        """
+        Digita caractere por caractere via teclas reais (typewrite).
+
+        Usar para campos que NAO aceitam Ctrl+V — como os campos
+        numericos da aba Financeiro no NBS (Entrada, Intervalo,
+        Parcelas, Tipo Pagamento). Funciona em qualquer tipo de campo.
+
+        Limitacao: so suporta caracteres ASCII (sem a tilde, c cedilha...).
+        Para texto com acentos, use digitar() com clipboard.
+        """
+        time.sleep(self._delay)
+        pyautogui.typewrite(str(texto), interval=intervalo)
+        time.sleep(self._delay)
+
     def tecla(self, *teclas: str) -> None:
-        """Pressiona uma tecla simples ou combinação (ex: 'enter', 'ctrl', 'a')."""
+        """Pressiona uma tecla simples ou combinacao (ex: 'enter', 'ctrl', 'a')."""
         time.sleep(0.2)
         pyautogui.hotkey(*teclas) if len(teclas) > 1 else pyautogui.press(teclas[0])
         time.sleep(0.3)

@@ -281,9 +281,18 @@ class LancamentoFabrica:
 
     def _passos_22_23_financeiro(self) -> None:
         """
-        Passos 22-23: aba Financeiro → 60 → 60 → 1 → Boleto Bancario → Enter.
+        Passos 22-23: aba Financeiro → 60 → Enter → 60 → Enter → 1 → Enter
+                      → Boleto Bancario → Enter.
 
-        Valores lidos do settings.yaml.
+        FIX: Os campos numericos do NBS nao aceitam Ctrl+V (clipboard).
+        Agora usa digitar_teclado() que simula teclas reais via typewrite(),
+        garantindo que os valores sejam digitados independente do tipo de campo.
+
+        Fluxo:
+          1. Clica na aba Financeiro
+          2. Aguarda 1.5s para a aba carregar e focar o primeiro campo
+          3. Pressiona Tab para garantir foco no primeiro campo
+          4. Limpa campo com Ctrl+A + Delete e digita cada valor
         """
         log.debug(
             f"Passos 22-23: financeiro "
@@ -291,14 +300,33 @@ class LancamentoFabrica:
             f"parcelas={self._fin_parcelas}, pgto={self._fin_pagamento})..."
         )
         self.tela.clicar("aba_financeiro")
-        self.tela.esperar(0.8)
-        self.tela.digitar(self._fin_entrada)
+        self.tela.esperar(1.5)              # aguarda aba carregar por completo
+
+        # Tab foca o primeiro campo (Entrada) antes de começar
+        self.tela.tecla("tab")
+        self.tela.esperar(0.3)
+
+        # Campo 1 — Entrada (dias)
+        self.tela.tecla("ctrl", "a")
+        self.tela.digitar_teclado(self._fin_entrada)
         self.tela.tecla("enter")
-        self.tela.digitar(self._fin_intervalo)
+        self.tela.esperar(0.4)
+
+        # Campo 2 — Intervalo (dias)
+        self.tela.tecla("ctrl", "a")
+        self.tela.digitar_teclado(self._fin_intervalo)
         self.tela.tecla("enter")
-        self.tela.digitar(self._fin_parcelas)
+        self.tela.esperar(0.4)
+
+        # Campo 3 — Parcelas
+        self.tela.tecla("ctrl", "a")
+        self.tela.digitar_teclado(self._fin_parcelas)
         self.tela.tecla("enter")
-        self.tela.digitar(self._fin_pagamento)
+        self.tela.esperar(0.4)
+
+        # Campo 4 — Tipo de Pagamento (Boleto Bancario)
+        self.tela.tecla("ctrl", "a")
+        self.tela.digitar_teclado(self._fin_pagamento)
         self.tela.tecla("enter")
         self.tela.esperar(1)
 

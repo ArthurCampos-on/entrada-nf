@@ -19,8 +19,11 @@ imagens:
   confianca: 0.7
 
 automacao:
-  # Tempo de espera entre ações (segundos) — aumente se o PC for lento
-  delay_acao: 0.5
+  # Tempo de espera entre ações (segundos)
+  # 0.3 → rápido (PC bom, internet boa)
+  # 0.5 → padrão recomendado
+  # 0.8 → lento (PC lento ou sistema travando)
+  delay_acao: 0.3
   # Tempo máximo esperando um elemento aparecer na tela (segundos)
   timeout_elemento: 12
   # Quantas vezes consecutivas o elemento precisa ser detectado para ser
