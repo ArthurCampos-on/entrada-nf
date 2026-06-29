@@ -22,7 +22,7 @@ _HTML = r"""<!DOCTYPE html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NBS Agent — Monitor</title>
+<title>Agent de Notas — Monitor</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
@@ -483,7 +483,7 @@ footer{border-top:1px solid var(--border);padding:14px 28px;display:flex;align-i
   </div><!-- /content -->
 
   <footer>
-    <span class="fcopy">Todos os direitos reservados a ArthurCampos</span>
+    <span class="fcopy">Todos os direitos reservados a Arthur Campos Eugenio</span>
     <span class="fver" id="fver">v1.0</span>
   </footer>
 </div>
@@ -921,6 +921,8 @@ class DashboardServer:
             return jsonify({"ok": ok})
 
     def iniciar(self) -> None:
+        import logging
+        logging.getLogger('werkzeug').setLevel(logging.ERROR)  # silencia logs HTTP
         self._thread = threading.Thread(
             target=lambda: self.app.run(
                 host=self.host, port=self.porta,

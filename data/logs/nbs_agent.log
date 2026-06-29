@@ -301,3 +301,19 @@
 2026-06-15 17:31:21 | WARNING | Imagem não encontrada: imagens\interface_correta_tributos.png
 2026-06-15 17:31:22 | WARNING | Imagem não encontrada: imagens\interface_correta_tributos.png
 2026-06-15 17:31:22 | ERROR   | Timeout na nota 194854: 'interface_correta_tributos' não apareceu em 15s
+2026-06-28 21:48:34 | INFO    | ==================================================
+2026-06-28 21:48:34 | INFO    |   NBS Agent iniciando...
+2026-06-28 21:48:34 | INFO    | ==================================================
+2026-06-28 21:48:34 | INFO    | Dashboard iniciado em http://127.0.0.1:8080
+2026-06-28 21:48:34 | INFO    | ✓ Dashboard disponível em http://127.0.0.1:8080
+2026-06-28 21:48:34 | INFO    | ✓ Sistema pronto para automações.
+2026-06-28 21:48:34 | INFO    | ⏰ Agendador iniciado — relatório às 08:00
+2026-06-28 21:55:13 | INFO    | ==================================================
+2026-06-28 21:55:13 | INFO    |   NBS Agent iniciando...
+2026-06-28 21:55:13 | INFO    | ==================================================
+2026-06-28 21:55:13 | INFO    | Dashboard iniciado em http://127.0.0.1:8080
+2026-06-28 21:55:13 | INFO    | ✓ Dashboard disponível em http://127.0.0.1:8080
+2026-06-28 21:55:13 | INFO    | ✓ Sistema pronto para automações.
+2026-06-28 21:55:13 | INFO    | ⏰ Agendador iniciado — relatório às 08:00
+2026-06-28 22:08:56 | INFO    | Gerando relatório — data: 27/06/2026
+2026-06-28 22:09:09 | ERROR   | Timeout no relatório: 'campo_empresa' não apareceu em 12s
