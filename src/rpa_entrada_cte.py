@@ -5,11 +5,14 @@ RPA de entrada em notas de CT-e (Conhecimento de Transporte Eletrônico).
 
 Fluxo geral
 ~~~~~~~~~~~
-1. O usuário informa quantas notas têm o mesmo fornecedor.
-2. Para a **primeira nota** executa o fluxo completo:
-   navegação pelo NBS → Fiscal → Entrada CTE → preenchimento → confirmação.
-3. Para as **notas adicionais** (mesmo fornecedor) reutiliza a tela já aberta
-   e pula as etapas de navegação e de pesquisa de CNPJ.
+1. Pede CNPJ do fornecedor via tela.pedir_formulario() — aparece no dashboard.
+2. Para cada nota: pede dados via tela.pedir_formulario() — aparece no dashboard.
+3. Executa a automação com os dados coletados (sem mais interação do usuário).
+
+Mudança em relação à versão anterior:
+  Todos os input() foram substituídos por self.tela.pedir_formulario().
+  Em modo terminal funciona igual (pergunta campo a campo).
+  Em modo dashboard exibe um formulário visual no browser.
 
 Imagens necessárias (pasta imagens/)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -56,6 +59,67 @@ class DadosNota:
 
 
 # ═══════════════════════════════════════════════════════════════════════════
+#  Campos do formulário (definidos uma vez, usados no pedir_formulario)
+# ═══════════════════════════════════════════════════════════════════════════
+
+_CAMPOS_CNPJ = [
+    {
+        "nome":        "cnpj",
+        "label":       "CNPJ do fornecedor",
+        "tipo":        "texto",
+        "placeholder": "00.000.000/0001-00",
+        "validacao":   "cnpj",
+    },
+]
+
+_CAMPOS_NOTA = [
+    # ── Identificação ────────────────────────────────────────────────────
+    {"nome": "numero",            "label": "Número da nota",              "tipo": "texto",
+     "secao": "Identificação"},
+    {"nome": "serie",             "label": "Série",                        "tipo": "texto"},
+    {"nome": "emissao",           "label": "Data de emissão",              "tipo": "texto",
+     "placeholder": "DD/MM/AAAA"},
+    {"nome": "modificar_entrada", "label": "Modificar número de entrada?", "tipo": "bool"},
+    {"nome": "numero_entrada",    "label": "Número de entrada",            "tipo": "texto",
+     "condicional_em": "modificar_entrada"},
+
+    # ── Valores ──────────────────────────────────────────────────────────
+    {"nome": "valor_total",       "label": "Valor total da nota",          "tipo": "texto",
+     "secao": "Valores", "placeholder": "1234.56"},
+    {"nome": "nf_valor",          "label": "Valor NF",                     "tipo": "texto",
+     "placeholder": "1234.56"},
+    {"nome": "chave_cte",         "label": "Chave CT-e (44 dígitos)",      "tipo": "texto",
+     "validacao": "chave_cte"},
+
+    # ── Natureza ─────────────────────────────────────────────────────────
+    {"nome": "numero_natureza",   "label": "Número de natureza",           "tipo": "opcao",
+     "secao": "Natureza", "opcoes": ["2", "3"]},
+
+    # ── Origem ───────────────────────────────────────────────────────────
+    {"nome": "cidade_saida",      "label": "Cidade de saída",              "tipo": "texto",
+     "secao": "Origem"},
+    {"nome": "uf_saida",          "label": "UF de saída",                  "tipo": "texto",
+     "placeholder": "SC", "maxlen": 2},
+
+    # ── Destino ──────────────────────────────────────────────────────────
+    {"nome": "cidade_chegada",    "label": "Cidade de chegada",            "tipo": "texto",
+     "secao": "Destino"},
+    {"nome": "uf_chegada",        "label": "UF de chegada",                "tipo": "texto",
+     "placeholder": "SP", "maxlen": 2},
+
+    # ── Tributação ───────────────────────────────────────────────────────
+    {"nome": "tem_icms",          "label": "Tem ICMS?",                    "tipo": "bool",
+     "secao": "Tributação"},
+    {"nome": "porcentagem_icms",  "label": "Porcentagem do ICMS",          "tipo": "texto",
+     "placeholder": "12", "condicional_em": "tem_icms"},
+    {"nome": "tem_outros",        "label": "Tem Outros?",                  "tipo": "bool",
+     "condicional_em": "tem_icms"},
+    {"nome": "valor_outros",      "label": "Valor de Outros",              "tipo": "texto",
+     "placeholder": "56.78", "condicional_em": "tem_outros"},
+]
+
+
+# ═══════════════════════════════════════════════════════════════════════════
 #  RPA principal
 # ═══════════════════════════════════════════════════════════════════════════
 
@@ -69,49 +133,28 @@ class EntradaCTE:
         self._fat_parcelas  = str(cfg("entrada_cte.faturamento_parcelas",        1))
         self._cod_contab    = str(cfg("entrada_cte.codigo_contabilizacao",     "40"))
 
-    # ------------------------------------------------------------------ #
-    #  Ponto de entrada público                                           #
-    # ------------------------------------------------------------------ #
+    # ── Ponto de entrada público ──────────────────────────────────────
 
     def lancar(self, quantidade: int) -> dict[str, bool]:
         """
         Lança `quantidade` notas CT-e do mesmo fornecedor.
 
-        O método coleta os dados interativamente no terminal **antes** de iniciar
-        a automação de cada nota, para que o usuário não precise monitorar o
-        terminal durante o preenchimento no NBS.
-
-        Fluxo:
-            1. Pede CNPJ do fornecedor (compartilhado por todas as notas).
-            2. Para cada nota: coleta dados → executa automação.
-               - Nota 1: fluxo completo (navegação + CNPJ + preenchimento).
-               - Nota 2+: fluxo reduzido (reutiliza tela já aberta).
-            3. Em caso de erro em nota intermediária, pausa e pergunta se
-               deve continuar com a próxima.
-
-        Args:
-            quantidade: Número de notas CT-e a lançar (mesmo fornecedor).
+        Todos os dados são coletados via tela.pedir_formulario():
+        - No terminal: campos aparecem um a um (comportamento anterior).
+        - No dashboard: aparece um formulário visual no browser.
 
         Returns:
-            Dicionário ``{"1": True, "2": False, ...}`` mapeando a posição
-            (1-indexed) de cada nota para True (sucesso) ou False (falha).
-
-        Raises:
-            Não lança exceções — erros são capturados internamente e registrados
-            em log e screenshot.
-
-        Exemplo:
-            resultados = EntradaCTE(tela).lancar(3)
-            # {"1": True, "2": True, "3": False}
+            {"1": True, "2": False, ...}
         """
         resultados: dict[str, bool] = {}
 
         cnpj = self._pedir_cnpj()
 
         for i in range(1, quantidade + 1):
-            log.info(f"Iniciando CT-e nota {i}/{quantidade}")
+            log.info(f"Coletando dados CT-e nota {i}/{quantidade}")
             dados = self._pedir_dados_nota(i, quantidade)
 
+            log.info(f"Iniciando automação da nota {i}/{quantidade}")
             try:
                 if i == 1:
                     self._lancar_primeira_nota(cnpj, dados)
@@ -135,12 +178,44 @@ class EntradaCTE:
 
         return resultados
 
-    # ------------------------------------------------------------------ #
-    #  Fluxos por tipo de nota                                            #
-    # ------------------------------------------------------------------ #
+    # ── Coleta de dados via formulário ────────────────────────────────
+
+    def _pedir_cnpj(self) -> str:
+        """Pede CNPJ do fornecedor via dashboard ou terminal."""
+        resultado = self.tela.pedir_formulario("CT-e — Fornecedor", _CAMPOS_CNPJ)
+        return resultado["cnpj"]
+
+    def _pedir_dados_nota(self, numero_nota: int, total: int) -> DadosNota:
+        """
+        Coleta todos os dados de uma nota via dashboard ou terminal.
+        No dashboard exibe um formulário com seções e campos condicionais.
+        """
+        titulo = f"CT-e — Nota {numero_nota} de {total}"
+        raw = self.tela.pedir_formulario(titulo, _CAMPOS_NOTA)
+
+        return DadosNota(
+            numero            = raw.get("numero", ""),
+            serie             = raw.get("serie", ""),
+            emissao           = raw.get("emissao", ""),
+            modificar_entrada = bool(raw.get("modificar_entrada")),
+            numero_entrada    = raw.get("numero_entrada") or None,
+            valor_total       = raw.get("valor_total", ""),
+            nf_valor          = raw.get("nf_valor", ""),
+            chave_cte         = raw.get("chave_cte", ""),
+            numero_natureza   = raw.get("numero_natureza", "2"),
+            cidade_saida      = raw.get("cidade_saida", ""),
+            uf_saida          = (raw.get("uf_saida") or "").upper(),
+            cidade_chegada    = raw.get("cidade_chegada", ""),
+            uf_chegada        = (raw.get("uf_chegada") or "").upper(),
+            tem_icms          = bool(raw.get("tem_icms")),
+            porcentagem_icms  = raw.get("porcentagem_icms") or None,
+            tem_outros        = bool(raw.get("tem_outros")),
+            valor_outros      = raw.get("valor_outros") or None,
+        )
+
+    # ── Fluxos por tipo de nota ───────────────────────────────────────
 
     def _lancar_primeira_nota(self, cnpj: str, dados: DadosNota) -> None:
-        """Fluxo completo: navegação + CNPJ + preenchimento + confirmação."""
         self._navegar_para_modulo()
         self._abrir_nova_entrada(cnpj)
         self._preencher_dados_nota(dados)
@@ -149,11 +224,6 @@ class EntradaCTE:
         self._finalizar()
 
     def _lancar_nota_adicional(self, dados: DadosNota) -> None:
-        """
-        Fluxo reduzido (mesmo fornecedor):
-        pula navegação e pesquisa de CNPJ.
-        """
-        # Abre nova entrada reaproveitando o fornecedor já selecionado
         self.tela.clicar("incluir_icone")
         self.tela.clicar("numerode_nota")
         self.tela.tecla("backspace")
@@ -163,21 +233,12 @@ class EntradaCTE:
         self._contabilizacao_nota_adicional()
         self._finalizar()
 
-    # ------------------------------------------------------------------ #
-    #  Passos compartilhados                                              #
-    # ------------------------------------------------------------------ #
+    # ── Passos de automação ───────────────────────────────────────────
 
     def _navegar_para_modulo(self) -> None:
-        """
-        Navega até a tela de Entrada CT-e dentro do NBS Fiscal.
-        Executa ao iniciar a PRIMEIRA nota.
-        """
         log.info("Navegando para NBS Fiscal → Entrada CT-e")
-
         self.tela.clicar("adm_aba")
         self.tela.clicar("nbs_fiscal")
-
-        # NBS Fiscal demora para abrir — aguarda 5 s e confirma telas
         self.tela.esperar(5)
         for _ in range(3):
             self.tela.tecla("enter")
@@ -185,95 +246,61 @@ class EntradaCTE:
         self.tela.tecla("enter")
         self.tela.esperar(1)
         self.tela.tecla("enter")
-
         self.tela.clicar("entrada_cte")
 
     def _abrir_nova_entrada(self, cnpj: str) -> None:
-        """
-        Clica em Incluir, seleciona Persona e preenche o CNPJ do fornecedor.
-        Executado apenas na primeira nota.
-        """
         log.info(f"Abrindo nova entrada CT-e (CNPJ: {cnpj})")
-
         self.tela.clicar("incluir_icone")
         self.tela.clicar("persona")
-
-        # Dois tabs avançam até o campo de CNPJ
         self.tela.tecla("tab")
         self.tela.tecla("tab")
-
         self.tela.digitar(cnpj)
         self.tela.tecla("enter")
-
         self.tela.clicar("icone_pesquisa")
         self.tela.clicar("aceitar_icone")
-
-        # Um tab posiciona no campo Número da Nota
         self.tela.tecla("tab")
 
     def _preencher_dados_nota(self, dados: DadosNota) -> None:
-        """
-        Preenche número, série, emissão, valor total, NF,
-        modelo fiscal (código 57) e chave CT-e.
-        """
         log.info(f"Preenchendo dados da nota {dados.numero}")
 
-        # ── Número, Série, Emissão ────────────────────────────────────
         self.tela.digitar(dados.numero)
         self.tela.tecla("tab")
-
         self.tela.digitar(dados.serie)
         self.tela.tecla("tab")
-
         self.tela.digitar(dados.emissao)
         self.tela.tecla("tab")
 
-        # ── Número de entrada (opcional) ──────────────────────────────
-        # Cursor está no campo Número de Entrada.
-        # Se o usuário quis modificar, preenche; caso contrário deixa o padrão.
         if dados.modificar_entrada and dados.numero_entrada:
             self.tela.digitar(dados.numero_entrada)
 
-        # 9 tabs avançam até o campo Valor Total
         for _ in range(9):
             self.tela.tecla("tab")
 
-        # ── Valor total ───────────────────────────────────────────────
         self.tela.digitar(dados.valor_total)
 
-        # 6 tabs avançam até o campo NF
         for _ in range(6):
             self.tela.tecla("tab")
 
-        # ── NF (prefixo "nf " + valor) ────────────────────────────────
         self.tela.digitar(f"nf {dados.nf_valor}")
 
-        # ── Modelo fiscal → código 57 ─────────────────────────────────
         self.tela.clicar("modelo_fiscal")
         self.tela.clicar("barra_modelo")
         self.tela.clicar("codigo_57")
 
-        # 3 tabs posicionam no campo Chave CT-e
         for _ in range(3):
             self.tela.tecla("tab")
 
         self.tela.digitar(dados.chave_cte)
 
     def _preencher_cfop_e_icms(self, dados: DadosNota) -> None:
-        """
-        Preenche Natureza da Operação, cidades, CFOP e tributação (ICMS).
-        """
         log.info("Preenchendo CFOP, cidades e tributação")
 
-        # ── Natureza da operação ──────────────────────────────────────
         self.tela.clicar("barra_natureza")
         self.tela.digitar(dados.numero_natureza)
         self.tela.tecla("tab")
-
         self.tela.digitar("0")
         self.tela.tecla("tab")
 
-        # ── Cidades ───────────────────────────────────────────────────
         self.tela.digitar(dados.cidade_saida)
         self.tela.tecla("tab")
         self.tela.digitar(dados.uf_saida)
@@ -283,36 +310,28 @@ class EntradaCTE:
         self.tela.digitar(dados.uf_chegada)
         self.tela.tecla("tab")
 
-        # ── CFOP: 1353 (mesmo estado) ou 2353 (estados diferentes) ───
         self.tela.clicar("cfops")
         self.tela.clicar("codigo_natureza")
         cfop = "1353" if dados.uf_saida == dados.uf_chegada else "2353"
         log.info(f"CFOP selecionado: {cfop}")
         self.tela.digitar(cfop)
 
-        # ── Tributação ────────────────────────────────────────────────
         if dados.tem_icms:
             self._preencher_com_icms(dados)
         else:
             self._preencher_sem_icms(dados)
 
     def _preencher_com_icms(self, dados: DadosNota) -> None:
-        """Preenche tributação quando a nota tem ICMS."""
         log.info("Tributação: COM ICMS")
-
         self.tela.clicar("tributavel_codigo")
         self.tela.clicar("verde_aceitar")
-
         self.tela.tecla("tab")
         self.tela.tecla("tab")
-
         self.tela.digitar(dados.valor_total)
         self.tela.tecla("tab")
-
         self.tela.digitar(dados.porcentagem_icms or "")
         self.tela.tecla("enter")
 
-        # Outros (ex: PIS/COFINS sobre CT-e)
         if dados.tem_outros and dados.valor_outros:
             log.info("Preenchendo campo Outros")
             self.tela.tecla("enter")
@@ -321,57 +340,33 @@ class EntradaCTE:
         self.tela.clicar("adicao")
 
     def _preencher_sem_icms(self, dados: DadosNota) -> None:
-        """Preenche tributação quando a nota NÃO tem ICMS."""
         log.info("Tributação: SEM ICMS")
-
         self.tela.clicar("naotributavel_codigo")
         self.tela.clicar("verde_aceitar")
-
         self.tela.tecla("tab")
         self.tela.tecla("tab")
-
         self.tela.digitar(dados.valor_total)
-
         self.tela.clicar("adicao")
 
     def _contabilizacao_primeira_nota(self) -> None:
-        """
-        Preenche a aba Contabilização.
-        Na primeira nota inclui passos extras (2× Tab + código contabilização + Enter).
-        Código lido de entrada_cte.codigo_contabilizacao no settings.yaml.
-        """
         log.info("Preenchendo Contabilização (primeira nota)")
-
         self.tela.clicar("contabilizacao")
-
         self.tela.tecla("tab")
         self.tela.tecla("tab")
         self.tela.digitar(self._cod_contab)
         self.tela.tecla("enter")
-
         self.tela.clicar("raio")
         self.tela.clicar("faturamento")
 
     def _contabilizacao_nota_adicional(self) -> None:
-        """
-        Preenche a aba Contabilização para notas adicionais.
-        Pula o Tab/40/Enter — vai direto para Raio e Faturamento.
-        """
         log.info("Preenchendo Contabilização (nota adicional)")
-
         self.tela.clicar("contabilizacao")
         self.tela.clicar("raio")
         self.tela.clicar("faturamento")
 
     def _finalizar(self) -> None:
-        """
-        Preenche Faturamento, pausa para revisão manual e confirma o lançamento.
-        Compartilhado entre primeira nota e notas adicionais.
-        Valores lidos de entrada_cte.faturamento_* no settings.yaml.
-        """
         log.info("Preenchendo Faturamento e confirmando lançamento")
 
-        # 4 tabs + campos de faturamento vindos do settings.yaml
         for _ in range(4):
             self.tela.tecla("tab")
 
@@ -381,115 +376,16 @@ class EntradaCTE:
         self.tela.tecla("tab")
         self.tela.digitar(self._fat_parcelas)
 
-        # Pausa para o usuário revisar os dados na tela antes de confirmar
         self.tela.pausar_para_usuario(
-            "Revise os dados na tela. Digite Y para confirmar o lançamento."
+            "Revise os dados na tela. Clique em Continuar para confirmar o lançamento."
         )
 
         self.tela.clicar("seta_preta")
         self.tela.clicar("confirmar")
-
-        self.tela.tecla("left")   # seta esquerda (navega diálogo de confirmação)
-        self.tela.tecla("enter")  # confirma seleção
-        self.tela.tecla("enter")  # segunda confirmação
+        self.tela.tecla("left")
+        self.tela.tecla("enter")
+        self.tela.tecla("enter")
         self.tela.esperar(3)
-        self.tela.clicar("cancelar")  # fecha tela após lançamento
+        self.tela.clicar("cancelar")
 
         log.info("Lançamento CT-e confirmado")
-
-    # ------------------------------------------------------------------ #
-    #  Coleta de dados do usuário                                         #
-    # ------------------------------------------------------------------ #
-
-    @staticmethod
-    def _pedir_cnpj() -> str:
-        """Pede e valida o CNPJ do fornecedor (único para todas as notas do lote)."""
-        print("\n" + "═" * 52)
-        print("  📋 ENTRADA CT-e — Dados do Fornecedor")
-        print("═" * 52)
-        cnpj = ""
-        while len(cnpj.replace(".", "").replace("/", "").replace("-", "")) != 14:
-            cnpj = input("  CNPJ do fornecedor (14 dígitos): ").strip()
-            apenas_digitos = cnpj.replace(".", "").replace("/", "").replace("-", "")
-            if len(apenas_digitos) != 14 or not apenas_digitos.isdigit():
-                print("  ⚠ CNPJ inválido. Digite 14 dígitos (com ou sem máscara).")
-                cnpj = ""
-        return cnpj
-
-    @staticmethod
-    def _pedir_dados_nota(numero_nota: int, total: int) -> DadosNota:
-        """
-        Coleta interativamente todos os dados necessários para uma nota.
-        As perguntas são feitas ANTES de iniciar a automação desta nota,
-        para não exigir atenção no terminal durante o preenchimento.
-        """
-        print("\n" + "═" * 52)
-        print(f"  📋 NOTA {numero_nota} de {total}")
-        print("═" * 52)
-
-        numero = input("  Número da nota: ").strip()
-        serie  = input("  Série: ").strip()
-        emissao = input("  Data de emissão (DD/MM/AAAA): ").strip()
-
-        mod_str = input("  Modificar número de entrada? [s/n]: ").strip().lower()
-        modificar_entrada = mod_str == "s"
-        numero_entrada: str | None = None
-        if modificar_entrada:
-            numero_entrada = input("  Número de entrada: ").strip()
-
-        valor_total = input("  Valor total da nota: ").strip()
-        nf_valor    = input("  Valor NF: ").strip()
-        chave_cte = ""
-        while len(chave_cte) != 44 or not chave_cte.isdigit():
-            chave_cte = input("  Chave CT-e (44 dígitos): ").strip()
-            if len(chave_cte) != 44 or not chave_cte.isdigit():
-                print(f"  ⚠ Chave inválida ({len(chave_cte)} dígitos). Digite exatamente 44 números.")
-
-        numero_natureza = ""
-        while numero_natureza not in ("2", "3"):
-            numero_natureza = input("  Número de natureza (2 ou 3): ").strip()
-
-        print("  Cidade de saída:")
-        cidade_saida = input("    Nome: ").strip()
-        uf_saida = ""
-        while len(uf_saida) != 2 or not uf_saida.isalpha():
-            uf_saida = input("    UF (2 letras): ").strip().upper()
-
-        print("  Cidade de chegada:")
-        cidade_chegada = input("    Nome: ").strip()
-        uf_chegada = ""
-        while len(uf_chegada) != 2 or not uf_chegada.isalpha():
-            uf_chegada = input("    UF (2 letras): ").strip().upper()
-
-        icms_str  = input("  Tem ICMS? [s/n]: ").strip().lower()
-        tem_icms  = icms_str == "s"
-        porcentagem_icms: str | None = None
-        tem_outros = False
-        valor_outros: str | None = None
-
-        if tem_icms:
-            porcentagem_icms = input("  Porcentagem do ICMS (ex: 12): ").strip()
-            outros_str = input("  Tem Outros? [s/n]: ").strip().lower()
-            tem_outros = outros_str == "s"
-            if tem_outros:
-                valor_outros = input("  Valor de Outros: ").strip()
-
-        return DadosNota(
-            numero            = numero,
-            serie             = serie,
-            emissao           = emissao,
-            modificar_entrada = modificar_entrada,
-            numero_entrada    = numero_entrada,
-            valor_total       = valor_total,
-            nf_valor          = nf_valor,
-            chave_cte         = chave_cte,
-            numero_natureza   = numero_natureza,
-            cidade_saida      = cidade_saida,
-            uf_saida          = uf_saida,
-            cidade_chegada    = cidade_chegada,
-            uf_chegada        = uf_chegada,
-            tem_icms          = tem_icms,
-            porcentagem_icms  = porcentagem_icms,
-            tem_outros        = tem_outros,
-            valor_outros      = valor_outros,
-        )

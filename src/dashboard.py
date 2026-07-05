@@ -198,17 +198,36 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg0);color:var(--
 .log-empty{color:var(--txt3);text-align:center;padding:40px 0;font-family:'Inter',sans-serif;font-size:13px}
 
 /* ── Modal de pausa ── */
-.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.8);display:flex;align-items:center;justify-content:center;z-index:999;padding:20px;backdrop-filter:blur(4px)}
-.modal-box{background:var(--bg1);border:1px solid var(--border2);border-radius:16px;padding:30px;width:100%;max-width:420px;box-shadow:0 24px 48px rgba(0,0,0,.5);animation:fadeIn .2s ease}
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.85);display:flex;align-items:center;justify-content:center;z-index:999;padding:20px;backdrop-filter:blur(4px)}
+.modal-box{background:var(--bg1);border:1px solid var(--border2);border-radius:16px;padding:28px 30px 30px;width:100%;max-width:460px;box-shadow:0 24px 64px rgba(0,0,0,.6);animation:fadeIn .2s ease;max-height:88vh;overflow-y:auto;scrollbar-width:thin}
 @keyframes fadeIn{from{opacity:0;transform:scale(.96)}to{opacity:1;transform:scale(1)}}
-.modal-icon{width:48px;height:48px;background:rgba(188,140,255,.12);border-radius:12px;display:flex;align-items:center;justify-content:center;margin:0 auto 16px}
-.modal-icon svg{width:24px;height:24px;color:var(--purple)}
-.modal-titulo{font-size:15px;font-weight:600;color:var(--txt1);text-align:center;margin-bottom:6px}
-.modal-sub{font-size:12.5px;color:var(--txt2);text-align:center;margin-bottom:22px}
+.modal-icon{width:44px;height:44px;background:rgba(188,140,255,.12);border-radius:11px;display:flex;align-items:center;justify-content:center;margin:0 auto 14px}
+.modal-icon svg{width:22px;height:22px;color:var(--purple)}
+.modal-titulo{font-size:15px;font-weight:600;color:var(--txt1);text-align:center;margin-bottom:5px}
+.modal-sub{font-size:12px;color:var(--txt2);text-align:center;margin-bottom:20px}
 .modal-opts{display:flex;flex-direction:column;gap:10px}
 .modal-btn{padding:13px 16px;border-radius:9px;font-size:13.5px;font-weight:500;cursor:pointer;border:1px solid var(--border);background:var(--bg2);color:var(--txt1);font-family:inherit;transition:all .15s;text-align:left;display:flex;align-items:center;gap:10px}
 .modal-btn:hover{background:var(--bg3);border-color:var(--border2);color:var(--blue)}
 .modal-btn svg{width:16px;height:16px;flex-shrink:0;opacity:.6}
+/* Form dentro do modal */
+.form-sep{border:none;border-top:1px solid var(--border);margin:14px 0 4px}
+.form-sec{font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--txt3);margin:14px 0 8px;display:flex;align-items:center;gap:8px}
+.form-sec::after{content:'';flex:1;height:1px;background:var(--border)}
+.fgrp{margin-bottom:11px}
+.fgrp.hidden{display:none}
+.flbl{font-size:11.5px;color:var(--txt2);font-weight:500;margin-bottom:5px;display:block}
+.finput{width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--txt1);font-family:'JetBrains Mono',monospace;font-size:13px;outline:none;transition:border-color .15s}
+.finput:focus{border-color:var(--blue);box-shadow:0 0 0 2px rgba(88,166,255,.12)}
+.finput::placeholder{color:var(--txt3);font-family:'Inter',sans-serif;font-size:12px}
+.fselect{width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--txt1);font-family:'Inter',sans-serif;font-size:13px;outline:none;cursor:pointer;transition:border-color .15s}
+.fselect:focus{border-color:var(--blue)}
+.bool-row{display:flex;gap:8px}
+.bool-opt{flex:1;padding:8px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;border:1px solid var(--border);background:var(--bg2);color:var(--txt3);font-family:inherit;transition:all .15s;text-align:center}
+.bool-opt.is-sim{background:rgba(63,185,80,.12);border-color:var(--green);color:var(--green)}
+.bool-opt.is-nao{background:rgba(248,81,73,.12);border-color:var(--red);color:var(--red)}
+.fsubmit{width:100%;padding:12px;background:var(--blue);color:#fff;border:none;border-radius:9px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;margin-top:10px;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px}
+.fsubmit:hover{background:#388bfd;transform:translateY(-1px);box-shadow:0 4px 14px rgba(88,166,255,.35)}
+.fsubmit svg{width:15px;height:15px}
 
 /* ── Empty ── */
 .empty{text-align:center;padding:48px 20px;color:var(--txt3)}
@@ -507,6 +526,10 @@ let rpaAtual = null;
 let allExec = [];
 let chart = null;
 let ultimoLogLen = 0;
+// Estado do modal
+let modalTitulo = null;
+let formState   = {};
+let formCampos  = [];
 
 // ── Navegação ────────────────────────────────────────────
 function goPage(id, el) {
@@ -585,10 +608,190 @@ async function executar() {
 // ── Controle: responder pausa ────────────────────────────
 async function responder(valor) {
   document.getElementById('modal').style.display = 'none';
+  modalTitulo = null;
   await fetch('/api/responder', {
     method: 'POST',
     headers: {'Content-Type':'application/json'},
     body: JSON.stringify({valor}),
+  });
+}
+
+// ── Renderiza modal de seleção de opção / confirmação ────────────────────────
+function renderOpcaoModal(acao) {
+  const isCont = acao.tipo === 'confirmacao';
+  document.getElementById('modal-titulo').textContent = acao.titulo || 'Ação necessária';
+  document.getElementById('modal-sub').textContent = isCont
+    ? 'Confirme para continuar a automação'
+    : 'Selecione uma opção para continuar';
+  document.getElementById('modal-opts').innerHTML = (acao.opcoes || []).map(o => `
+    <button class="modal-btn" onclick="responder('${escHtml(o.chave)}')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+      ${escHtml(o.descricao)}
+    </button>`).join('');
+}
+
+// ── Renderiza modal de formulário com campos dinâmicos ───────────────────────
+function renderFormModal(acao) {
+  formCampos = acao.campos || [];
+  formState  = {};
+
+  // Inicializa defaults
+  for (const c of formCampos) {
+    formState[c.nome] = c.tipo === 'bool' ? false : (c.opcoes ? c.opcoes[0] : '');
+  }
+
+  document.getElementById('modal-titulo').textContent = acao.titulo || 'Dados necessários';
+  document.getElementById('modal-sub').textContent = 'Preencha os campos e confirme para continuar';
+
+  let html = '';
+  let ultimaSecao = null;
+
+  for (const c of formCampos) {
+    // Separador de seção
+    const secao = c.secao || null;
+    if (secao && secao !== ultimaSecao) {
+      ultimaSecao = secao;
+      html += `<div class="form-sec">${escHtml(secao)}</div>`;
+    }
+
+    const condAttr  = c.condicional_em ? ` data-cond="${escHtml(c.condicional_em)}"` : '';
+    const condOculto = c.condicional_em ? ' hidden' : '';
+
+    html += `<div class="fgrp${condOculto}" id="fgrp-${c.nome}"${condAttr}>`;
+    html += `<label class="flbl">${escHtml(c.label)}</label>`;
+
+    if (c.tipo === 'bool') {
+      // Toggle Sim/Não — "Não" começa selecionado (padrão = false)
+      html += `<div class="bool-row">
+        <button type="button" class="bool-opt" id="fbool-${c.nome}-s"
+          onclick="setBool('${c.nome}',true)">Sim</button>
+        <button type="button" class="bool-opt is-nao" id="fbool-${c.nome}-n"
+          onclick="setBool('${c.nome}',false)">Não</button>
+      </div>`;
+
+    } else if (c.tipo === 'opcao') {
+      const opts = (c.opcoes || []).map(o =>
+        `<option value="${escHtml(o)}">${escHtml(o)}</option>`).join('');
+      html += `<select class="fselect" id="finp-${c.nome}"
+        onchange="formState['${c.nome}']=this.value">${opts}</select>`;
+
+    } else {
+      const ph = c.placeholder ? ` placeholder="${escHtml(c.placeholder)}"` : '';
+      const ml = c.maxlen     ? ` maxlength="${c.maxlen}"`                 : '';
+      html += `<input type="text" class="finput" id="finp-${c.nome}"${ph}${ml}
+        oninput="formState['${c.nome}']=this.value">`;
+    }
+
+    html += '</div>';
+  }
+
+  html += `<button type="button" class="fsubmit" onclick="submitFormulario()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+    Confirmar dados
+  </button>`;
+
+  document.getElementById('modal-opts').innerHTML = html;
+}
+
+// ── Toggle Sim/Não + mostra/oculta condicionais ──────────────────────────────
+function setBool(nome, val) {
+  formState[nome] = val;
+
+  const btnS = document.getElementById('fbool-' + nome + '-s');
+  const btnN = document.getElementById('fbool-' + nome + '-n');
+  if (btnS) {
+    btnS.className = 'bool-opt' + (val  ? ' is-sim' : '');
+    btnN.className = 'bool-opt' + (!val ? ' is-nao' : '');
+  }
+
+  // Mostra/oculta todos os campos que dependem deste bool
+  document.querySelectorAll(`[data-cond="${nome}"]`).forEach(el => {
+    if (val) {
+      el.classList.remove('hidden');
+    } else {
+      el.classList.add('hidden');
+      // Limpa valor do campo oculto para não enviar lixo
+      const inp = el.querySelector('.finput,.fselect');
+      const campo = formCampos.find(c => c.nome === el.id.replace('fgrp-',''));
+      if (campo && campo.tipo === 'bool') {
+        formState[campo.nome] = false;
+        setBool(campo.nome, false);
+      } else if (inp) {
+        inp.value = '';
+        if (campo) formState[campo.nome] = '';
+      }
+    }
+  });
+}
+
+// ── Valida e envia dados do formulário ───────────────────────────────────────
+async function submitFormulario() {
+  const dados = {};
+  let erroMsg  = '';
+
+  for (const c of formCampos) {
+    const grp    = document.getElementById('fgrp-' + c.nome);
+    const oculto = grp && grp.classList.contains('hidden');
+
+    if (oculto) {
+      // Campo condicional não exibido → valor nulo
+      dados[c.nome] = c.tipo === 'bool' ? false : null;
+      continue;
+    }
+
+    if (c.tipo === 'bool') {
+      dados[c.nome] = formState[c.nome] === true;
+
+    } else if (c.tipo === 'opcao') {
+      const el = document.getElementById('finp-' + c.nome);
+      dados[c.nome] = el ? el.value : (c.opcoes ? c.opcoes[0] : '');
+
+    } else {
+      dados[c.nome] = (formState[c.nome] || '').trim();
+    }
+
+    // Validações inline
+    if (!oculto) {
+      if (c.validacao === 'cnpj') {
+        const d = String(dados[c.nome]).replace(/\D/g, '');
+        if (d.length !== 14) { erroMsg = `${c.label}: informe 14 dígitos`; break; }
+      }
+      if (c.validacao === 'chave_cte') {
+        const v = String(dados[c.nome]);
+        if (v.length !== 44 || isNaN(Number(v))) {
+          erroMsg = `${c.label}: deve ter exatamente 44 dígitos numéricos`; break;
+        }
+      }
+      if (c.maxlen) {
+        const v = String(dados[c.nome]);
+        if (v.length !== c.maxlen) {
+          erroMsg = `${c.label}: deve ter ${c.maxlen} caractere(s)`; break;
+        }
+      }
+      // Campo obrigatório (texto/opcao sem condicional)
+      if (!c.condicional_em && c.tipo !== 'bool' && !dados[c.nome]) {
+        erroMsg = `${c.label}: campo obrigatório`; break;
+      }
+    }
+  }
+
+  if (erroMsg) {
+    // Exibe erro sem fechar o modal
+    const sub = document.getElementById('modal-sub');
+    const orig = sub.textContent;
+    sub.style.color = 'var(--red)';
+    sub.textContent = '⚠ ' + erroMsg;
+    setTimeout(() => { sub.style.color = ''; sub.textContent = orig; }, 3500);
+    return;
+  }
+
+  // Envia dict de dados para o backend — controlador desbloqueia a thread
+  document.getElementById('modal').style.display = 'none';
+  modalTitulo = null;
+  await fetch('/api/responder', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({valor: dados}),
   });
 }
 
@@ -649,22 +852,23 @@ async function pollEstado() {
       }
     }
 
-    // Modal de pausa
+    // Modal de pausa — detecta tipo (opcao/confirmacao/formulario)
     const modal = document.getElementById('modal');
     if (d.acao_pendente) {
-      document.getElementById('modal-titulo').textContent = d.acao_pendente.titulo;
-      const isCont = d.acao_pendente.tipo === 'confirmacao';
-      document.getElementById('modal-sub').textContent = isCont
-        ? 'Confirme para continuar a automação'
-        : 'Selecione uma opção para continuar';
-      document.getElementById('modal-opts').innerHTML = (d.acao_pendente.opcoes || []).map(o => `
-        <button class="modal-btn" onclick="responder('${o.chave}')">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:16px;height:16px;flex-shrink:0;opacity:.6"><polyline points="9 18 15 12 9 6"/></svg>
-          ${escHtml(o.descricao)}
-        </button>`).join('');
+      const tit = d.acao_pendente.titulo || '';
+      if (tit !== modalTitulo) {
+        // Só re-renderiza quando muda de ação — preserva input do usuário durante poll
+        modalTitulo = tit;
+        if (d.acao_pendente.tipo === 'formulario') {
+          renderFormModal(d.acao_pendente);
+        } else {
+          renderOpcaoModal(d.acao_pendente);
+        }
+      }
       modal.style.display = 'flex';
     } else {
       modal.style.display = 'none';
+      modalTitulo = null;
     }
   } catch(e) { /* silencioso */ }
 }
