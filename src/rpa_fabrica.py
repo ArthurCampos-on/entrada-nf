@@ -284,15 +284,10 @@ class LancamentoFabrica:
         Passos 22-23: aba Financeiro → 60 → Enter → 60 → Enter → 1 → Enter
                       → Boleto Bancario → Enter.
 
-        FIX: Os campos numericos do NBS nao aceitam Ctrl+V (clipboard).
-        Agora usa digitar_teclado() que simula teclas reais via typewrite(),
-        garantindo que os valores sejam digitados independente do tipo de campo.
-
-        Fluxo:
-          1. Clica na aba Financeiro
-          2. Aguarda 1.5s para a aba carregar e focar o primeiro campo
-          3. Pressiona Tab para garantir foco no primeiro campo
-          4. Limpa campo com Ctrl+A + Delete e digita cada valor
+        FIX (tab extra removido): após clicar em aba_financeiro o cursor já
+        fica no Campo 1 (Entrada). O tab anterior deslocava tudo em 1 campo:
+          Entrada → Intervalo, Intervalo → Parcelas, Parcelas → Boleto (bug).
+        Cada campo é limpo com Ctrl+A antes de digitar para evitar resíduos.
         """
         log.debug(
             f"Passos 22-23: financeiro "
@@ -301,10 +296,7 @@ class LancamentoFabrica:
         )
         self.tela.clicar("aba_financeiro")
         self.tela.esperar(1.5)              # aguarda aba carregar por completo
-
-        # Tab foca o primeiro campo (Entrada) antes de começar
-        self.tela.tecla("tab")
-        self.tela.esperar(0.3)
+        # Cursor já está no Campo 1 (Entrada) após clicar na aba — sem tab extra
 
         # Campo 1 — Entrada (dias)
         self.tela.tecla("ctrl", "a")

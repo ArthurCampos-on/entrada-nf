@@ -179,7 +179,13 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg0);color:var(--
 .sdot.running{background:var(--blue);animation:pulse 1.2s infinite}
 .sdot.paused{background:var(--yellow);animation:pulse .8s infinite}
 .sdot.error{background:var(--red)}
+.sdot.cancelado{background:var(--orange,#e3a000)}
 .sdot.success{background:var(--green)}
+.btn-cancelar{display:none;align-items:center;gap:7px;padding:7px 14px;background:rgba(248,81,73,.08);border:1px solid var(--red);color:var(--red);border-radius:8px;font-size:12.5px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .18s;white-space:nowrap}
+.btn-cancelar:hover{background:rgba(248,81,73,.18);transform:translateY(-1px)}
+.btn-cancelar svg{width:13px;height:13px;flex-shrink:0}
+.btn-cancel-modal{width:100%;padding:9px;background:transparent;border:none;border-top:1px solid var(--border);color:var(--txt3);font-size:12px;cursor:pointer;font-family:inherit;margin-top:8px;transition:color .15s}
+.btn-cancel-modal:hover{color:var(--red)}
 .sb-txt{font-size:13px;font-weight:500;color:var(--txt1)}
 .sb-sub{font-size:12px;color:var(--txt2)}
 .sb-ts{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--txt3)}
@@ -427,7 +433,13 @@ footer{border-top:1px solid var(--border);padding:14px 28px;display:flex;align-i
             <div class="sb-sub" id="sb-sub">Nenhuma automação em execução</div>
           </div>
         </div>
-        <div class="sb-ts" id="sb-ts">—</div>
+        <div style="display:flex;align-items:center;gap:12px">
+          <div class="sb-ts" id="sb-ts">—</div>
+          <button class="btn-cancelar" id="btn-cancelar" onclick="cancelarOp()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            Cancelar
+          </button>
+        </div>
       </div>
 
       <!-- Logs -->
@@ -616,6 +628,14 @@ async function responder(valor) {
   });
 }
 
+// ── Cancela a operação em andamento ──────────────────────────
+async function cancelarOp() {
+  // Fecha modal se estiver aberto (libera a tela)
+  document.getElementById('modal').style.display = 'none';
+  modalTitulo = null;
+  await fetch('/api/cancelar', {method:'POST'});
+}
+
 // ── Renderiza modal de seleção de opção / confirmação ────────────────────────
 function renderOpcaoModal(acao) {
   const isCont = acao.tipo === 'confirmacao';
@@ -623,11 +643,13 @@ function renderOpcaoModal(acao) {
   document.getElementById('modal-sub').textContent = isCont
     ? 'Confirme para continuar a automação'
     : 'Selecione uma opção para continuar';
-  document.getElementById('modal-opts').innerHTML = (acao.opcoes || []).map(o => `
+  const botoesHtml = (acao.opcoes || []).map(o => `
     <button class="modal-btn" onclick="responder('${escHtml(o.chave)}')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
       ${escHtml(o.descricao)}
     </button>`).join('');
+  document.getElementById('modal-opts').innerHTML = botoesHtml +
+    `<button type="button" class="btn-cancel-modal" onclick="cancelarOp()">⛔ Cancelar operação</button>`;
 }
 
 // ── Renderiza modal de formulário com campos dinâmicos ───────────────────────
@@ -688,7 +710,8 @@ function renderFormModal(acao) {
   html += `<button type="button" class="fsubmit" onclick="submitFormulario()">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
     Confirmar dados
-  </button>`;
+  </button>
+  <button type="button" class="btn-cancel-modal" onclick="cancelarOp()">⛔ Cancelar operação</button>`;
 
   document.getElementById('modal-opts').innerHTML = html;
 }
@@ -802,12 +825,19 @@ function limparLogs() {
 }
 
 const COR = {INFO:'#8b949e',SUCCESS:'#3fb950',ERROR:'#f85149',WARNING:'#e3b341',PAUSE:'#bc8cff',CRITICAL:'#f85149',DEBUG:'#6e7681'};
-const STATUS_TXT = {idle:'Aguardando',running:'Executando',paused:'Pausado — aguardando resposta',error:'Erro na execução'};
+const STATUS_TXT = {
+  idle:      'Aguardando',
+  running:   'Executando',
+  paused:    'Pausado — aguardando resposta',
+  error:     'Erro na execução',
+  cancelado: 'Operação cancelada',
+};
 const STATUS_SUB = {
-  idle:'Nenhuma automação em execução',
-  running:'Automação em andamento no PC',
-  paused:'Responda a pergunta abaixo para continuar',
-  error:'Veja o log para detalhes do erro',
+  idle:      'Nenhuma automação em execução',
+  running:   'Automação em andamento no PC',
+  paused:    'Responda a pergunta abaixo para continuar',
+  error:     'Veja o log para detalhes do erro',
+  cancelado: 'A operação foi interrompida — pode iniciar uma nova',
 };
 
 async function pollEstado() {
@@ -827,8 +857,12 @@ async function pollEstado() {
 
     // Botão executar
     const btn = document.getElementById('exec-btn');
-    if (d.status === 'idle' || d.status === 'error') {
-      if (btn.disabled && rpaAtual) {
+    const btnCanc = document.getElementById('btn-cancelar');
+    const ativo = d.status === 'running' || d.status === 'paused';
+    btnCanc.style.display = ativo ? 'flex' : 'none';
+    if (d.status === 'idle' || d.status === 'error' || d.status === 'cancelado') {
+      btn.disabled = false;
+      if (d.status === 'cancelado' && rpaAtual) {
         selecionarRPA(rpaAtual, document.querySelector(`.rpa-btn[data-tipo="${rpaAtual}"]`));
       }
     } else {
@@ -1122,6 +1156,13 @@ class DashboardServer:
                 return jsonify({"ok": False})
             data = request.get_json() or {}
             ok = self.controlador.responder(data.get("valor", ""))
+            return jsonify({"ok": ok})
+
+        @self.app.route("/api/cancelar", methods=["POST"])
+        def api_cancelar():
+            if not self.controlador:
+                return jsonify({"ok": False})
+            ok = self.controlador.cancelar()
             return jsonify({"ok": ok})
 
     def iniciar(self) -> None:
